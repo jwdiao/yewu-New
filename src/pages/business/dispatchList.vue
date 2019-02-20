@@ -194,6 +194,7 @@
                 ],
                 currentDayOrNight: '白班',
                 currentDate: '',
+              centerName:'',///0212多加一个参数
             }
         },
         created(){
@@ -261,7 +262,8 @@
             async getAllPersonList(){
                 let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getLateList'
                 console.log('yyyyyyyy:',axiosUrl)
-                const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+                // const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+                const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate,centerName:this.centerName, page: this.currentPage + '', pagesize: this.pageSize + ''})
 
                 // const result = await http.post('sanyUserPushRecord/getLateList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
@@ -285,11 +287,12 @@
              setTimeout(()=>{this.$refs.download.click()},1000)
           },*/
          async  download () {
-           // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
-           let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
+           let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
+           // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
            url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}`;
            url = encodeURI(encodeURI(url));
-           window.open(url,'_blank');
+           // window.open(url,'_blank');
+           location.href = url
           },
             searchDataFn () {
               this.currentPage = 1;

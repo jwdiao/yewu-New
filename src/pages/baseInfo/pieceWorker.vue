@@ -83,7 +83,7 @@
 							</el-table-column>
 						</el-table>
 					</template>
-					<el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+					<el-dialog title="修改信息" :visible.sync="dialogFormVisible">
 						<el-form :model="form">
 							<el-form-item label="姓名" :label-width="formLabelWidth">
 								<el-input v-model="form.name" autocomplete="off"></el-input>

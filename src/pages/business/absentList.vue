@@ -131,6 +131,7 @@
         ],
         currentDayOrNight: '白班',
         currentDate: '',
+        centerName:'',///0212多加一个参数
       }
     },
     created(){
@@ -170,7 +171,7 @@
       async getRenderData(){
          let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getAbsentList1';
         // console.log('测试旷工统计：',axiosUrl)/
-        const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+        const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate,centername:this.centerName, page: this.currentPage + '', pagesize: this.pageSize + ''})
         if(result && result.data && result.data.ret == 200){
           const arr = result.data.getAbsentList;
           /*console.log(arr)
@@ -222,11 +223,12 @@
            描述：导出功能
          * */
       async  download () {
-        // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
-        let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
+        let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportAbsentList'
+        // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportAbsentList';
         url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}`;
         url = encodeURI(encodeURI(url));
-        window.open(url,'_blank');
+        //window.open(url,'_blank');
+        location.href=  url;
       },
       searchDataFn () {
         this.currentPage = 1

@@ -9,7 +9,12 @@
             <div class="search">
               <span class="search_name_module">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：<input class="searchname" type="text" placeholder="请输入姓名" ref="workname" style="margin-left: 4px;"></span>
               <span class="search_name_module">工&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：<input class="searchtext" type="text" placeholder="请输入工号" ref="worknum" style="margin-left: 4px;"></span>
-              <!--植入日历-->
+             <!--http://10.19.7.69:8080/importfile/pg.xlsx-->
+							<span class="paigong_download"
+							@click = "downClick">
+								<i class="el-icon-download"></i>下载文件
+							</span>
+							<!--植入日历-->
               <div class="selectDate">
                 <template>
                 <div class="block moudle">
@@ -96,6 +101,7 @@ import headTop from '../../components/headTop'
 import http from '../../api/http'
 import {getCookieInfo} from '../../api/getCookie'
 import $ from 'jquery'
+
 export default {
 	components: {
 		headTop
@@ -109,7 +115,7 @@ export default {
       },
       pickerOptionsEnd:{
         disabledDate:(time) =>{
-          return time.getTime() < new Date(this.startDate).getTime() - 3600*1000*24 || time.getTime() > Date.now();
+          return time.getTime() < new Date(this.startDate).getTime() || time.getTime() > Date.now();
         }
       },
       startDate: '',  //开始时间
@@ -170,6 +176,7 @@ export default {
         console.log('historyData:',this.historyData)
         this.pagination.dataCount = res.data.data.totalCount // 总数
         this.eventsnapimg = this.historyData[0].snappicurl //点击切换图片
+
       }
     },
     /*函数名：handleDateChange
@@ -190,12 +197,42 @@ export default {
      描述：点击按钮检索信息
    * */
     searchProInfo(){
-      this.pagination.page = 1
-
-      this.handleDataSearch()
-
+      if(this.startDate && this.endDate){
+        this.pagination.page = 1
+        this.handleDataSearch()
+        if(this.historyData.length>0){
+          this.downShow = true;
+        }else{
+          this.downShow = false;
+        }
+      }else{
+        this.$message({
+          type:'error',
+          message:'必须填写开始时间和结束时间'
+        })
+      }
 
     },
+		downClick(){
+				//this.downHref = "dasadasdasdasd"
+				//userPushRecord/exportexcel/{workname}/{workno}/{startTime}/{endTime}
+        if(this.startDate && this.endDate){
+					const workname = this.$refs.workname.value?this.$refs.workname.value:0;
+					const workno = this.$refs.worknum.value?this.$refs.worknum.value:0;
+					const startTime = this.startDate?this.startDate:0;
+					const endTime = this.endDate?this.endDate:0;
+					const axiosUrl = getCookieInfo().baseUrl;
+			    const myHref = `${axiosUrl}/userPushRecord/exportexcel/${workname}/${workno}/${startTime}/${endTime}`
+					console.log(myHref);
+					window.location.href = myHref
+				}else{
+					this.$message({
+						type:'error',
+						message:'下载文件必须填写开始时间和结束时间'
+					})
+				}
+
+		},
     /*函数名：handleDataSearch
      参数：无
      描述：根据当前选择的信息检索
@@ -354,6 +391,17 @@ export default {
           background: linear-gradient(top,  #4CDDED,  #0088FE);
           background: -ms-linear-gradient(top,  #4CDDED,  #0088FE);
         }
+				.paigong_download{
+					background: rgba(0,200,0,0.8);color:#fff;position:relative;
+					color:#fff;
+					height: 32px;line-height: 32px;
+					border-radius: 2px;
+					display: inline-block;
+					vertical-align: middle;
+					padding:0 10px;
+					cursor: pointer;
+					/deep/ .el-icon-download{}
+				}
       }
       .title{
         background-color: #EFF2F7;
@@ -410,6 +458,7 @@ export default {
               font-size: 16px;
               box-sizing:border-box;
               line-height:35px;
+
               /*color:#31a0ff;*/
             }
           }

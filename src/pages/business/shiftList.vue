@@ -170,6 +170,7 @@
                 ],
                 currentDayOrNight: '白班',
                 currentDate: '',
+              centerName:'',//0212多加一个参数
             }
         },
         created(){
@@ -237,7 +238,7 @@
             async getAllPersonList(){
                 let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getChangeWorkList';
                 console.log('测试调班统计：',axiosUrl)
-                const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+                const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate,centerName:this.centerName, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 // const result = await http.post('sanyUserPushRecord/getChangeWorkList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
                   this.dataList = result.data.changeWorkList;
@@ -249,11 +250,12 @@
             描述：导出功能
           * */
           async  download () {
-            // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
-            let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
+            let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportChangeWorkList'
+            // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportChangeWorkList';
             url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}`;
             url = encodeURI(encodeURI(url));
-            window.open(url,'_blank');
+            // window.open(url,'_blank');
+            location.href = url
           },
 
             async searchDataFn () {
