@@ -1,6 +1,5 @@
 <template>
   <div class="checking-cameras">
-    <head-top></head-top>
     <template>
       <el-table
         :data="dataList"

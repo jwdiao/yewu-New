@@ -1,6 +1,5 @@
 <template>
 	<div class=""  style="height:100%;overflow-y: hidden;">
-		<head-top></head-top>
 		<section class="data_section"  style="height:100%;">
       <div class="index_main" style="height: 100%;overflow: auto">
         <div class="index_left"  style="height:100%;">
@@ -20,7 +19,7 @@
               <el-select v-model="value" placeholder="加工中心" size="small"  @change="selectMachingCenter">
                 <el-option v-for="item in optionsOne" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-button type="primary" class="deleteBtn" @click="deleteProInfo" size="small" style="width: 120px;margin-left: 60px;">删除</el-button>
+              <el-button type="primary" class="deleteBtn" @click="deleteProInfo" size="small" style="width: 120px;margin-left: 60px;height:40px;">删除</el-button>
               <!--<div class="deleteBtn" @click="deleteProInfo">删除</div>-->
             </div>
             <!--&lt;!&ndash;中心列表&ndash;&gt;
@@ -219,6 +218,10 @@ export default {
       padding-top: 0px;
       padding-left: 0px;
       padding-bottom: 15px;
+      /deep/ .el-input__inner{
+        height: 40px;
+        line-height: 40px;
+      }
       .search{
         padding-left: 30px;
         width: 100%;

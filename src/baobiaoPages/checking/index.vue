@@ -5,8 +5,8 @@
       <span class="title" @click="enterIndexPage('/faceAndAttendance')">三现数据中心</span>
       <em class="time" v-text="currentTime"></em>
       <div class="dayOrnight">
-        <img v-show="dayOrNightStatus ==='白班'" src="../assets/images/index_sun.png" />
-        <img v-show="dayOrNightStatus ==='夜班'" src="../assets/images/index_moon.png" />
+        <img v-show="dayOrNightStatus ==='白班'" src="../../assets/images/index_sun.png" />
+        <img v-show="dayOrNightStatus ==='夜班'" src="../../assets/images/index_moon.png" />
         <span v-text="dayOrNightStatus">白班</span>
       </div>
     </div>
@@ -32,12 +32,12 @@
 
 <script>
 import moment from 'moment'
-import AbnormalStatistics from '@/components/checking/AbnormalStatistics'
-import Attendance from '@/components/checking/Attendance'
-import Checking from '@/components/checking/Checking'
-import MachingCenter from '@/components/checking/MachingCenter'
-import http from '../api/http'
-import {getCookieInfo} from '../api/getCookie'
+import AbnormalStatistics from '@/baobiaoPages/checking/AbnormalStatistics'
+import Attendance from '@/baobiaoPages/checking//Attendance'
+import Checking from '@/baobiaoPages/checking/Checking'
+import MachingCenter from '@/baobiaoPages/checking/MachingCenter'
+import http from '../../api/http'
+import {getCookieInfo} from '../../api/getCookie'
 export default {
   name: 'home',
   components: {
@@ -211,7 +211,7 @@ export default {
 <style lang="scss" scoped>
 .index{
   height:100%;
-  background-image: url(../assets/images/index_bg.png);
+  background-image: url(../../assets/images/index_bg.png);
   background-size: cover;
   color: rgb(255, 255, 255);
   background-repeat: no-repeat;overflow: hidden;

@@ -1,11 +1,10 @@
 <template>
   <div>
-    <head-top></head-top>
     <section class="el-container is-vertical">
       <el-row style="margin-top: 40px; padding-left: 10px;">
-        <el-form :inline="true" class="demo-form-inline">
+        <el-form :inline="true" class="demo-form-inline absentList">
           <el-form-item label="日期">
-            <el-date-picker
+            <el-date-picker class="settingWidth"
               v-model="searchDate"
               type="date"
               value-format="yyyy-MM-dd"
@@ -15,7 +14,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="班次">
-            <el-select v-model="dayOrNight" placeholder="请选择">
+            <el-select class="settingWidth" v-model="dayOrNight" placeholder="请选择">
               <el-option
                 v-for="item in classes"
                 :key="item.value"
@@ -24,7 +23,20 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="姓名">
+            <el-input class="settingWidth" v-model="personName" placeholder="请输入姓名" clearable @clear="clearPersonName"></el-input>
+          </el-form-item>
+          <el-form-item label="工号">
+            <el-input class="settingWidth" v-model="personNumber" placeholder="请输入工号" clearable @clear="clearPersonNumber"></el-input>
+          </el-form-item>
+          <el-form-item label="归属中心">
+            <el-select class="settingWidth" v-model="personDepartment" placeholder="请选择" clearable @clear="clearMachingCenter" @change="selectMachingCenter">
+              <el-option v-for="item in departmentDataArr" :key="item.value" :label="item.label" :value="item.value">
+
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="submitBtn">
             <el-button type="primary" @click="onSubmit">进行查询</el-button>
           </el-form-item>
           <a class="paigong_download" href="javascript:void(0);" @click="download">
@@ -97,6 +109,10 @@
     },
     data() {
       return {
+        personName:'',//员工姓名   0225修改
+        personNumber:'',//员工工号   0225修改
+        personDepartment:'',//员工归属中心   0225修改
+        departmentDataArr:[], //归属中心集合   0225修改
         visible: false,
         classes: [
           {
@@ -131,12 +147,14 @@
         ],
         currentDayOrNight: '白班',
         currentDate: '',
-        centerName:'',///0212多加一个参数
+        centerName:'',///0212多加一个参数(0225修改)
       }
     },
     created(){
       this.setDefaultDate();
       this.getRenderData();
+      //获取加工中心
+      this.getCenterName()
     },
     mounted(){},
     methods:{
@@ -164,14 +182,24 @@
         }
       },
       onSubmit() {
-
+        const {personName,personNumber,personDepartment} = this
+        /*console.log('personName:',personName)
+        console.log('personNumber:',personNumber)
+        console.log('personDepartment:',personDepartment)*/
         this.currentPage = 1
         this.getRenderData();
       },
       async getRenderData(){
          let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getAbsentList1';
+         // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getAbsentList1';
         // console.log('测试旷工统计：',axiosUrl)/
-        const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate,centername:this.centerName, page: this.currentPage + '', pagesize: this.pageSize + ''})
+        const result = await http.post(axiosUrl,{
+          workType: this.dayOrNight,
+          stopTime: this.searchDate,
+          centername:this.personDepartment,
+          workname:this.personName,
+          workno:this.personNumber,
+          page: this.currentPage + '', pagesize: this.pageSize + ''})
         if(result && result.data && result.data.ret == 200){
           const arr = result.data.getAbsentList;
           /*console.log(arr)
@@ -218,17 +246,58 @@
           this.dayOrNight = this.currentDayOrNight = '夜班';
         }
       },
+      //选择加工中心
+      selectMachingCenter(val){
+        let obj = {};
+        obj = this.departmentDataArr.find((item)=>{
+          return item.value === val;
+        });
+        this.personDepartment = obj.label
+      },
+      /*函数名：getCenterName
+       参数：无
+       描述：异步ajax请求与后台通信，成功时，中心名称选择
+      * */
+      async getCenterName () {
+        let axiosUrl = getCookieInfo().baseUrl + '/userMessage/getCenternameList';
+        const res = await http.get(axiosUrl)
+        if (res.data.ret === "200") {
+          var centerNames = res.data.centernameList
+          for (var i = 0; i < centerNames.length; i++) {
+            var optionsObj = {}
+            optionsObj.value = centerNames[i].threeleveldep
+            optionsObj.label = centerNames[i].threeleveldep
+            this.departmentDataArr.push(optionsObj)
+          }
+        }
+      },
+      //清空加工中心数据
+      clearMachingCenter(){
+        this.personDepartment = ''
+      },
+      //清空用户姓名
+      clearPersonName(){
+        this.personName = ''
+      },
+      //清空用户工号
+      clearPersonNumber(){
+        this.personNumber = ''
+      },
+
       /*函数名：download
-           参数：
-           描述：导出功能
-         * */
+       参数：
+       描述：导出功能
+     * */
       async  download () {
         let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportAbsentList'
+        // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportAbsentList'
         // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportAbsentList';
-        url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}`;
-        url = encodeURI(encodeURI(url));
+        url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centername=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+
+        url = (encodeURI(url));
         //window.open(url,'_blank');
         location.href=  url;
+        console.log('url:',url)
       },
       searchDataFn () {
         this.currentPage = 1
@@ -247,7 +316,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   /deep/ .padding20 {
     padding: 20px 0;
   }
@@ -259,6 +328,17 @@
     display: inline-block;
     vertical-align: middle;
     padding:0 10px;
-  /deep/ .el-icon-download{}
   }
+/deep/ .el-form-item__content{
+  width: 180px;
+}
+  /deep/.el-date-editor.el-input, .el-date-editor.el-input__inner{
+    width: 180px;
+  }
+  .submitBtn{
+    /deep/ .el-form-item__content{
+      width: 98px;
+    }
+  }
+
 </style>

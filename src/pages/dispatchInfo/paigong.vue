@@ -1,14 +1,13 @@
 <template>
-	<div class="myBox"  style="height:100%;overflow:hidden;">
-		<head-top></head-top>
+	<div class="myBox"  style="height:93%;overflow:hidden;">
 		<section class="data_section" style="height:100%;">
       <div class="index_main" style="height: 100%;">
         <div class="index_left"  style="height:100%;">
           <div class="index_left_bottom"  style="height:100%;">
             <!--<p class="home_title">派工信息列表</p>-->
             <!--上传-->
-            <div class="search" style="position:relative;padding-bottom: 50px;border-bottom: 2px dotted rgba(230,230,230,1)" ><!-- border-bottom: 2px dotted rgba(230,230,230,1)-->
-             <!-- <form method="post" id="formBiao" enctype="multipart/form-data">
+            <!--<div class="search" style="position:relative;padding-bottom: 55px;border-bottom: 2px dotted rgba(230,230,230,1)" >&lt;!&ndash; border-bottom: 2px dotted rgba(230,230,230,1)&ndash;&gt;
+             &lt;!&ndash; <form method="post" id="formBiao" enctype="multipart/form-data">
                 <span>派工日期：</span>
                 <input type="date" name="date" value="date" class="selectDate" ref="planDate">
                 <span >加工中心：</span>
@@ -17,8 +16,8 @@
                 </select>
                 <input type="file" name="file"  value="file" class="block">
                 <input type="button" class="gosearch" value="上传派工信息" @click="submit">
-              </form>-->
-              <!--element-ui-->
+              </form>&ndash;&gt;
+              &lt;!&ndash;element-ui&ndash;&gt;
               <span style="display: inline" class="paigong-title-name">派工日期</span>
               <div class="selectDate">
                 <div class="block">
@@ -39,37 +38,93 @@
                          :on-change="beforeUpload" :on-exceed="handleExceed"
                          :on-remove="removeDoc"
                          :http-request="uploadSectionFile" :auto-upload="false">
-                <el-button id="upload-document" slot="trigger" icon="el-icon-upload2" size="small" type="success" plain style="background: rgba(0,200,0,0.8);color:#fff">上传文件</el-button>
-                <el-button style="width:120px;" size="small" type="primary" @click="submitUpload" v-show="isShow">确定</el-button>
-                <!--<el-button slot="trigger" size="small" type="primary" plain>选取文件</el-button>
-                <el-button style="margin-left: 10px;" size="small" icon="el-icon-upload2" type="success" @click="submitUpload">上传文件</el-button>-->
+                <el-button id="upload-document" slot="trigger" icon="el-icon-upload2" type="success" plain style="background: rgba(0,200,0,0.8);color:#fff">上传文件</el-button>
+                <el-button style="width:120px;" type="primary" @click="submitUpload" v-show="isShow">确定</el-button>
+                &lt;!&ndash;<el-button slot="trigger" size="small" type="primary" plain>选取文件</el-button>
+                <el-button style="margin-left: 10px;" size="small" icon="el-icon-upload2" type="success" @click="submitUpload">上传文件</el-button>&ndash;&gt;
               </el-upload>
-            </div>
+            </div>-->
             <!--查询-->
-            <div class="search" style="position: relative;margin-bottom: 10px">
-              <span style="display: inline" class="paigong-title-name">查询日期</span>
-              <div class="selectDate">
-                <div class="block">
-                  <el-date-picker  type="date"
-                                   size="small" value-format="yyyy-MM-dd" style="width: 100%;"
-                   placeholder="选择日期" v-model="value2" @change="handleDateSearch">
-                  </el-date-picker>
-                </div>
-              </div>
-              <span class="paigong-title-name">加工中心</span>
-              <el-select v-model="value" placeholder="请选择" size="small"  @change="selectMachingCenter">
-                <el-option v-for="item in optionsOne" :key="item.value" :label="item.label" :value="item.value"></el-option>
-              </el-select>
-              <el-button type="primary" class="gosearch" @click="searchProInfo" size="small" style="width: 120px;margin-left: 60px;">查询</el-button>
-              <!--<div class="gosearch" @click="searchProInfo">查询</div>-->
-            </div>
-            <!--中心列表-->
+
+            <section class="el-container is-vertical">
+
+              <el-row style="margin-top: 20px; padding-left: 10px;">
+                <el-form :inline="true" class="demo-form-inline">
+                  <el-form-item label="派工日期">
+                    <el-date-picker
+                      v-model="value1"
+                      type="date"
+                      :picker-options="pickerOptions"
+                      value-format="yyyy-MM-dd"
+                      @change="handleDateUpload"
+                      placeholder="选择日期"><!---->
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="加工中心">
+                    <el-select v-model="uploadMachingCenterItem" placeholder="请选择"clearable @clear="clearMachingCenterItem" @change="uploadMachingCenter">
+                      <el-option
+                        v-for="item in optionsTwo"
+                        :key="item.value3"
+                        :label="item.label"
+                        :value="item.value3">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <a class="paigong_download" href="http://10.19.7.69:8080/importfile/pg.xlsx" >
+                    <i class="el-icon-download"></i>下载模板
+                  </a>
+                  <el-upload id="formBiao" style="display:inline-block;background:none" :limit="1"
+                             class="upload-demo" ref="upload" accept=".xls,.xlsx"  action="/userPushRecord/find/all"
+                             :on-change="beforeUpload" :on-exceed="handleExceed"
+                             :on-remove="removeDoc"
+                             :http-request="uploadSectionFile" :auto-upload="false">
+                    <el-button id="upload-document" slot="trigger" icon="el-icon-upload2" type="success" plain style="background: rgba(0,200,0,0.8);color:#fff">上传文件</el-button>
+                    <el-button style="width:120px;" type="primary" @click="submitUpload" v-show="isShow">确定</el-button>
+                    <!--<el-button slot="trigger" size="small" type="primary" plain>选取文件</el-button>
+                    <el-button style="margin-left: 10px;" size="small" icon="el-icon-upload2" type="success" @click="submitUpload">上传文件</el-button>-->
+                  </el-upload>
+                </el-form>
+              </el-row>
+
+              <el-row style="padding-left: 10px;">
+                <el-form :inline="true" class="demo-form-inline">
+                  <el-form-item label="查询日期">
+                    <el-date-picker
+                      v-model="value2"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      @change="handleDateSearch"
+                      placeholder="选择日期"><!---->
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="加工中心">
+                    <el-select v-model="machingCenterName" placeholder="请选择" clearable @clear="clearMachingCenter" @change="selectMachingCenter">
+                      <el-option
+                        v-for="item in optionsOne"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="工号/姓名">
+                    <el-input v-model="workNumberName" placeholder="请输入工号姓名" clearable @clear="clearWorknoAndName" ></el-input><!--@clear="clearPersonName"-->
+                  </el-form-item>
+
+                  <el-form-item class="submitBtn">
+                    <el-button type="primary" @click="searchProInfo">进行查询</el-button>
+                  </el-form-item>
+
+                </el-form>
+              </el-row>
+            </section>
+
 
             <el-table
               stripe
               :data="historyData"
               style="width: 100%"
-              height="600">
+              height="550">
               <el-table-column
                 type="index"
                 label="序号"
@@ -109,22 +164,6 @@
               </el-table-column>
             </el-table>
 
-           <!-- <div class="title"><span>中心名称</span><span>工号/姓名</span><span>派工开始时间</span><span>派工结束时间</span><span>派工日期</span></div>
-            <div>
-              <div class="index_left_bottom_main">
-                <div class="message">
-                    <div class="title_message" v-for="(item,index) in historyData" :key="index">&lt;!&ndash; @click.stop="openMessageBox(item.workname)"&ndash;&gt;
-                      <span>{{item.machinename}}</span>
-                      <span>{{item.workusernum}}</span>
-                      <span>{{item.startworktime}}</span>
-                      <span>{{item.endworktime}}</span>
-                      <span>{{currentYear+"-"+currentMon+"-"+currentDay}}</span>
-                      <span v-if="isShowTime">{{uploadTime}}</span>
-                      <span v-else>{{searchTime}}</span>
-                    </div>
-                </div>
-              </div>
-            </div>-->
             <!--分页器-->
             <el-pagination style="text-align: center" background :page-sizes="[10,20,30,50,100]" :current-page="pagination.page"
               :page-size="pagination.pageSize" :pager-count="7" :total="pagination.dataCount" layout="total,sizes,prev, pager, next, jumper"
@@ -149,6 +188,7 @@ export default {
 	},
   data() {
     return {
+      workNumberName:'',//工号姓名
       planDate:'', //派工日期
       searchTime:'',//查询日期
       uploadTime:'',//上传日期
@@ -198,7 +238,8 @@ export default {
     var initDate = this.currentYear+"-"+this.currentMon+"-"+this.currentDay
     var initDates = initDate.toString()
     pageSize = pageSize.toString()
-    this.getWorkPlanInfoList(machingCenterName,initDates,this.pagination.page,pageSize)
+    const{workNumberName} = this
+    this.getWorkPlanInfoList(machingCenterName,workNumberName,initDates,this.pagination.page,pageSize)
 
 
   },
@@ -282,9 +323,12 @@ export default {
           let {page,pageSize} =this.pagination
           page = page.toString()
           // pageSize = pageSize.toString()
-          let {uploadTime,uploadMachingCenterItem} = this
-          this.getWorkPlanInfoList(uploadMachingCenterItem,uploadTime,page,pageSize.toString())
+        let {searchTime,machingCenterName,workNumberName} = this
+          this.getWorkPlanInfoList(machingCenterName,searchTime,page,pageSize.toString())
         //}
+        //上传成功后清除按钮下的文件
+        this.$refs.upload.clearFiles();
+        this.isShow = false
       }else{
         console.log('res:',res.data.msg)
         this.$message({
@@ -302,12 +346,14 @@ export default {
       参数：centername:加工中心；date:日期
       描述：成功时或查询时的调用方法
    * */
-    async getWorkPlanInfoList (centername,date,page,pageSize) {
+    async getWorkPlanInfoList (centername,workNumberName,date,page,pageSize) {
       if (!centername || centername === '请选择') centername = ''
       if (!date) date = this.currentYear+"-"+this.currentMon+"-"+this.currentDay
+
       let axiosUrl = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/getListOfNewUpload';
+      // let axiosUrl = 'http://10.88.190.36:8083/sanyWorkPlanExcel/getListOfNewUpload';
       console.log('派工信息导入：',axiosUrl)
-      const res = await http.post(axiosUrl,{'centername':centername,'date':date,'page':page,'pagesize':pageSize})
+      const res = await http.post(axiosUrl,{'centername':centername,'workusernum':workNumberName,'date':date,'page':page,'pagesize':pageSize})
       // const res = await http.post("/sanyWorkPlanExcel/getListOfNewUpload",{'centername':centername,'date':date,'page':page,'pagesize':pageSize})
       if (res.data.ret === "200") {
         console.log('res:',res)
@@ -428,9 +474,9 @@ export default {
         });
       });
     },
-    /*函数名：selectMachingCenter，
-      参数：val：选择的当前options的value值（选项）
-      描述：选择对应选项显示options的label值
+    /*函数名：deleteSingleUser，
+      参数：centername,date,workusernum
+      描述：删除
      * */
     async deleteSingleUser(centername,date,workusernum){
       let axiosUrl = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/deleteOneUserWorkPlan';
@@ -455,6 +501,16 @@ export default {
       });
       this.uploadMachingCenterItem = obj.label
     },
+    //清除X号
+    clearMachingCenter(){
+      this.machingCenterName = ""   //查询
+    },
+    clearMachingCenterItem(){
+      this.uploadMachingCenterItem = ""   //上传
+    },
+    clearWorknoAndName(){
+      this.workNumberName = ""   //工号姓名
+    },
     /*函数名：searchProInfo
      参数：无
      描述：点击按钮查询信息
@@ -463,11 +519,11 @@ export default {
       this.isShowTime = false
       this.historyData = []
 
-      let {searchTime,machingCenterName} = this
+      let {searchTime,machingCenterName,workNumberName} = this
       let {pageSize} =this.pagination
       this.pagination.page = 1
       pageSize = pageSize.toString()
-      this.getWorkPlanInfoList(machingCenterName,searchTime,this.pagination.page,pageSize)
+      this.getWorkPlanInfoList(machingCenterName,workNumberName,searchTime,this.pagination.page,pageSize)
     },
     /*函数名：currentChange
      参数：index：当前项
@@ -479,8 +535,8 @@ export default {
       this.pagination.page = index.toString()
       let {pageSize} =this.pagination
       pageSize  = pageSize.toString()
-      let{machingCenterName,searchTime} = this
-      this.getWorkPlanInfoList(machingCenterName,searchTime,this.pagination.page,pageSize)
+      let {searchTime,machingCenterName,workNumberName} = this
+      this.getWorkPlanInfoList(machingCenterName,workNumberName,searchTime,this.pagination.page,pageSize)
       console.log(this.historyData)
     },
     /*函数名：prevClick，nextClick
@@ -500,8 +556,8 @@ export default {
       this.pagination.pageSize = val
       let{page} = this.pagination
       page = '1'
-      let{machingCenterName,searchTime} = this
-      this.getWorkPlanInfoList(machingCenterName,searchTime,page,this.pagination.pageSize.toString())
+      let {searchTime,machingCenterName,workNumberName} = this
+      this.getWorkPlanInfoList(machingCenterName,workNumberName,searchTime,page,this.pagination.pageSize.toString())
     },
   }
 }
@@ -510,6 +566,9 @@ export default {
 
 <style lang="less" scoped>
 	@import '../../assets/css/mixin';
+  /deep/ .el-main{
+    overflow: hidden;
+  }
 	.header_container{
 		background-color: #EFF2F7;
 		height: 60px;
@@ -526,7 +585,7 @@ export default {
     /*color: #fff;*/
     background-color: #EFF2F7;
   }
-  /*6s页面左侧盒子*/
+
   .index_left{
     width: 99%;float: left;height:100%;padding-right: 15px;
     display: flex;flex-direction: column;
@@ -538,6 +597,10 @@ export default {
       padding-top: 0px;
       padding-left: 0px;
       padding-bottom: 15px;
+      /deep/ .el-input__inner{
+        height: 40px;
+        line-height: 40px;
+      }
       .search{
         padding-left: 30px;
         width: 100%;
@@ -673,7 +736,7 @@ export default {
   /deep/ .el-upload-list{
     position: absolute;
     top:-5px;
-    left: 235px;
+    left: 245px;
   }
   /deep/ #upload-document:hover{
     background: rgba(0,200,0,0.5)!important;
@@ -690,11 +753,17 @@ export default {
   .paigong_download{
     background: rgba(0,200,0,0.8);color:#fff;position:relative;
     color:#fff;
-    height: 32px;line-height: 32px;
-    border-radius: 2px;
+    width: 90px;
+    height: 39px;line-height: 40px;
+    margin: 0 20px;
+    border-radius: 3px;
     display: inline-block;
     vertical-align: middle;
+    text-align: center;
     padding:0 10px;
     /deep/ .el-icon-download{}
+    &:hover{
+      background: rgba(0,200,0,0.6)
+    }
   }
 </style>

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <head-top></head-top>
         <section class="el-container is-vertical">
             <el-row style="margin-top: 40px; padding-left: 10px;">
                 <el-form :inline="true" class="demo-form-inline">
@@ -24,7 +23,20 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item>
+                  <el-form-item label="姓名">
+                    <el-input v-model="personName" placeholder="请输入姓名" clearable @clear="clearPersonName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="工号">
+                    <el-input v-model="personNumber" placeholder="请输入工号" clearable @clear="clearPersonNumber"></el-input>
+                  </el-form-item>
+                  <el-form-item label="归属中心">
+                    <el-select v-model="personDepartment" placeholder="请选择" clearable @clear="clearMachingCenter" @change="selectMachingCenter">
+                      <el-option v-for="item in departmentDataArr" :key="item.value" :label="item.label" :value="item.value">
+
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                    <el-form-item class="submitBtn">
                         <el-button type="primary" @click="searchDataFn">进行查询</el-button>
                     </el-form-item>
                   <!--<a  ref="download" :href="dataUrl"></a>-->
@@ -159,6 +171,10 @@
         },
         data() {
             return {
+              personName:'',//员工姓名
+              personNumber:'',//员工工号
+              personDepartment:'',//员工归属中心
+              departmentDataArr:[], //归属中心集合
                 visible: false,
                 classes: [
                     {
@@ -200,6 +216,8 @@
         created(){
             this.setDefaultDate();
             this.getAllPersonList();
+            //加工中心
+          this.getCenterName()
         },
         mounted(){},
         methods:{
@@ -261,9 +279,16 @@
             },
             async getAllPersonList(){
                 let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getLateList'
-                console.log('yyyyyyyy:',axiosUrl)
+                // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getLateList'
                 // const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
-                const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate,centerName:this.centerName, page: this.currentPage + '', pagesize: this.pageSize + ''})
+                const result = await http.post(axiosUrl,{
+                  workType: this.dayOrNight,
+                  stopTime: this.searchDate,
+                  centerName:this.personDepartment,
+                  workname:this.personName,
+                  workno:this.personNumber,
+
+                  page: this.currentPage + '', pagesize: this.pageSize + ''})
 
                 // const result = await http.post('sanyUserPushRecord/getLateList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
@@ -288,13 +313,18 @@
           },*/
          async  download () {
            let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
+           // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportLateList'
            // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
-           url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}`;
-           url = encodeURI(encodeURI(url));
+           url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+           url = (encodeURI(url));
            // window.open(url,'_blank');
            location.href = url
           },
             searchDataFn () {
+              const {personName,personNumber,personDepartment} = this
+             /* console.log('personName:',personName)
+              console.log('personNumber:',personNumber)
+              console.log('personDepartment:',personDepartment)*/
               this.currentPage = 1;
               this.getAllPersonList();
             },
@@ -305,6 +335,45 @@
 
                 }
             },
+
+          //选择加工中心
+          selectMachingCenter(val){
+            let obj = {};
+            obj = this.departmentDataArr.find((item)=>{
+              return item.value === val;
+            });
+            this.personDepartment = obj.label
+          },
+          /*函数名：getCenterName
+           参数：无
+           描述：异步ajax请求与后台通信，成功时，中心名称选择
+          * */
+          async getCenterName () {
+            let axiosUrl = getCookieInfo().baseUrl + '/userMessage/getCenternameList';
+            const res = await http.get(axiosUrl)
+            if (res.data.ret === "200") {
+              var centerNames = res.data.centernameList
+              for (var i = 0; i < centerNames.length; i++) {
+                var optionsObj = {}
+                optionsObj.value = centerNames[i].threeleveldep
+                optionsObj.label = centerNames[i].threeleveldep
+                this.departmentDataArr.push(optionsObj)
+              }
+            }
+          },
+          //清空加工中心数据
+          clearMachingCenter(){
+            this.personDepartment = ''
+          },
+          //清空用户姓名
+          clearPersonName(){
+            this.personName = ''
+          },
+          //清空用户工号
+          clearPersonNumber(){
+            this.personNumber = ''
+          },
+
             getPersonInfo: function(event){
                 this.personInfoBool = true;
                 const name = event.name,
@@ -371,5 +440,16 @@
     vertical-align: middle;
     padding:0 10px;
     /deep/ .el-icon-download{}
+  }
+  /deep/ .el-form-item__content{
+    width: 180px;
+  }
+  /deep/.el-date-editor.el-input, .el-date-editor.el-input__inner{
+    width: 180px;
+  }
+  .submitBtn{
+    /deep/ .el-form-item__content{
+      width: 98px;
+    }
   }
 </style>

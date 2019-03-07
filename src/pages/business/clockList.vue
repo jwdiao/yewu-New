@@ -1,6 +1,5 @@
 <template>
 	<div class=""  style="height:100%;overflow-y: hidden;">
-		<head-top></head-top>
 		<section class="data_section" style="height:calc(100% + 24px); ;">
       <div class="index_main" style="height: 100%;overflow: hidden">
         <div class="index_left">

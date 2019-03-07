@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<!-- <div class="header_container">计件人员信息</div> -->
-		<head-top></head-top>
 		<div class="source">
 			<section class="el-container is-vertical">
 				<header class="el-header" style="height: 60px;">
@@ -74,11 +73,9 @@
 							</el-table-column>
 							<el-table-column prop="positionname" label="职位">
 							</el-table-column>
-							<el-table-column prop="worktype" label="是否计件工">
-							</el-table-column>
 							<el-table-column align="center" label="操作" width="200" fixed="right">
 								<template slot-scope="scope">
-									<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+									<el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary"  icon="el-icon-edit">编辑</el-button>
 								</template>
 							</el-table-column>
 						</el-table>
@@ -86,10 +83,10 @@
 					<el-dialog title="修改信息" :visible.sync="dialogFormVisible">
 						<el-form :model="form">
 							<el-form-item label="姓名" :label-width="formLabelWidth">
-								<el-input v-model="form.name" autocomplete="off"></el-input>
+								<el-input v-model="form.name" autocomplete="off" :disabled="true"></el-input>
 							</el-form-item>
 							<el-form-item label="工号" :label-width="formLabelWidth">
-								<el-input v-model="form.workno" autocomplete="off"></el-input>
+								<el-input v-model="form.workno" autocomplete="off" readonly :disabled="true"></el-input>
 							</el-form-item>
 							<el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
 								<el-input v-model="form.id" autocomplete="off"></el-input>

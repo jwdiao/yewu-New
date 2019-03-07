@@ -5,8 +5,8 @@
       <span class="title" @click="enterIndexPage('/faceAndAttendance')">三现数据中心</span>
       <em class="time" v-text="currentTime"></em>
       <div class="dayOrnight">
-        <img v-show="dayOrNightStatus ==='白班'" src="../assets/images/index_sun.png" />
-        <img v-show="dayOrNightStatus ==='夜班'" src="../assets/images/index_moon.png" />
+        <img v-show="dayOrNightStatus ==='白班'" src="../../assets/images/index_sun.png" />
+        <img v-show="dayOrNightStatus ==='夜班'" src="../../assets/images/index_moon.png" />
         <span v-text="dayOrNightStatus">白班</span>
       </div>
     </div>
@@ -17,7 +17,8 @@
         <AbnormalStatistics :info="baseInfo" :monthData="monthDataLeft" :yearData="yearDataLeft" />
       </div>
       <div class="index_con">
-        <Checking :info="baseInfo" :isDayOrNigint="dayOrNightStatus" :hourEchartsDataBetween="hourEchartsDataBetween" :centerLen="centernameLen" />
+        <!-- <Checking :info="baseInfo" :isDayOrNigint="dayOrNightStatus" :hourEchartsDataBetween="hourEchartsDataBetween" :centerLen="centernameLen" /> -->
+        <Checking :info="baseInfo" :isDayOrNigint="dayOrNightStatus" :kaoqinList="kaoqinList" :kaoqinListSubCenter="kaoqinListSubCenter" />
       </div>
       <div class="index_right">
         <attendance :dayInfo="dayEchartsDataRight" :monthInfo="monthEchartsDataRight" :yearInfo="yearEchartsDataRight" />
@@ -32,12 +33,20 @@
 
 <script>
 import moment from 'moment'
-import AbnormalStatistics from '@/components/checking/AbnormalStatistics'
-import Attendance from '@/components/checking/Attendance'
-import Checking from '@/components/checking/Checking'
-import MachingCenter from '@/components/checking/MachingCenter'
-import http from '../api/http'
-import {getCookieInfo} from '../api/getCookie'
+import AbnormalStatistics from '@/baobiaoPages/checking20190218/AbnormalStatistics'
+import Attendance from '@/baobiaoPages/checking20190218//Attendance'
+import Checking from '@/baobiaoPages/checking20190218/Checking'
+import MachingCenter from '@/baobiaoPages/checking20190218/MachingCenter'
+import http from '../../api/http'
+import {getCookieInfo} from '../../api/getCookie'
+import {
+  // getAttendanceData,
+  // getLateEchartsOfYear,
+  getAbsentList1,
+  getLateList,
+  getChangeWorkList,
+  getOutList
+} from '../../api/baobiao/checkingApi'
 export default {
   name: 'home',
   components: {
@@ -60,13 +69,41 @@ export default {
       timerIdHour: '', // 中间小时的定时器
       currentTime: '', // 系统当前时间
       dayOrNightStatus: '', // 白班或夜班
-      centernameLen: '' // 加工中心个数
+      centernameLen: '', // 加工中心个数
+      kaoqinList: {
+        lateList: [], // 迟到
+        leaveList: [], //早退
+        absentList: [], //旷工
+        abnormalList: [] //未派工
+      },
+      kaoqinListSubCenter: {
+        leaveData: { // 离岗
+          leaveList: [],
+          pagination: {}
+        },
+        lateData: { // 迟到
+          lateList: [],
+          pagination: {}
+        },
+        absentData: { //旷工
+          absentList: [],
+          pagination: {}
+        },
+        abnormalData: { //未派工
+          abnormalList: [],
+          pagination: {}
+        }
+        
+      },
+      allCenterList: [], // 所有加工中心列表
+      selectedSumcompany: '北京桩机',
+      allCenterNameLen: '' // 所有加工中心的长度
     }
   },
   created () {
   },
   mounted () {
-
+    
     // 顶部日期时间
     this.currentTime = this.getCurrentDateTime()
     this.cutTimeFun()
@@ -86,26 +123,22 @@ export default {
     this.getMonthRightData(this.centername)
     this.getYearRightData(this.centername)
 
-    // 中间一小时echart图
-    // this.HourBetweenData(this.centername)
+    // 获取所有加工中心数据
+    this.getCenterNameData()
 
     // 定时器刷新
-    this.timerId = setInterval(() => {
+    /* this.timerId = setInterval(() => {
       this.getBaseInfoData(this.centername)
       this.getYearLeftData(this.centername)
       this.getDayRightData(this.centername)
       this.getMonthRightData(this.centername)
       this.getYearRightData(this.centername)
-    }, 10000)
-/*     this.timerIdHour = setInterval(() => {
-      this.HourBetweenData(this.centername)
-    }, 30000) */
+    }, 10000) */
   },
   methods: {
     enterIndexPage (path) {
       // 路径从state中获取
       // window.location.href = `${this.$store.state.baseUrl}/sanyShebei` // 测试
-      console.log(11111111)
       this.$router.replace(path)
     },
     // 时间格式化
@@ -127,7 +160,8 @@ export default {
     // 基本信息顶部
     async getBaseInfoData (centername) {
       let axiosUrl = getCookieInfo().baseUrl + '/sanyAttendanceData/getAttendanceData'
-      console.log('基本信息顶部:',axiosUrl)
+      // let axiosUrl = 'http://10.88.195.89:8083/sanyAttendanceData/getAttendanceData'
+      // console.log('基本信息顶部:',axiosUrl)
       const res = await http.post(axiosUrl, { centername: centername })
       // const res = await http.post('/sanyAttendanceData/getAttendanceData', { centername: centername })
       if (res.data && res.data.ret === '200') {
@@ -149,7 +183,7 @@ export default {
       const res = await http.post(axiosUrl, { centername: centername })
       // const res = await http.post('/sanyUserPushRecord/getWorkEchartsOfDay', { centername: centername })
       if (res.data && res.data.ret === '200') {
-        console.log('uuuu:',res)
+        // console.log('uuuu:',res)
         this.dayEchartsDataRight = res.data
         this.dayEchartsDataRight.totalNum = this.baseInfo.totalNum
       }
@@ -177,25 +211,112 @@ export default {
         this.monthEchartsDataRight.totalNum = this.baseInfo.totalNum
       }
     },
-    // 中间一小时echart图
-    /* async HourBetweenData (centername) {
-      let axiosUrl = getCookieInfo().baseUrl + '/sanyAttendanceData/getWorkIngEchartsData'
-      const res = await http.post(axiosUrl, { centername: centername })
-      // const res = await http.post('/sanyAttendanceData/getWorkIngEchartsData', { centername: centername })
-      if (res.data && res.data.ret === '200') {
-        this.hourEchartsDataBetween = res.data
+    // 获取加工中心列表
+    async getCenterNameData () {
+      let axiosUrl = getCookieInfo().baseUrl + '/userMessage/getCenternameList'
+      const res = await http.get(axiosUrl)
+      // console.log('获取的所有加工中心2：',res)
+      if (res && res.data && res.data.ret === '200') {
+        const {centernameList, ret} = res.data
+        this.allCenterList = centernameList.map((ele) => {
+          return ele.threeleveldep
+        })
+        this.$store.commit('changeAllCenterListMut', this.allCenterList)
+        // 获取人员考勤列表
+        this.allCenterNameLen = this.allCenterList.length
+        this.getAbnormaData()
       }
-    }, */
+      
+      // console.log('获取的所有加工中心2：',centernameList,ret)
+    },
+    // 获取人员在岗列表
+    async getAbnormaData () {
+      let axiosUrl = getCookieInfo().baseUrl + '/sanyAttendanceData/getAbnormaData'+ '?end='+this.$store.state.allCenterList.length
+      const res = await http.get(axiosUrl)
+      if (res && res.data) {
+        const {ret, data} = res.data
+        if (res && ret === '200') {
+          this.kaoqinList.lateList = data.lateList // 迟到
+          this.kaoqinList.leaveList = data.leaveList //早退
+          this.kaoqinList.absentList = data.absentList //旷工
+          this.kaoqinList.abnormalList = data.abnormalList //未派工
+        }
+      }
+    },
+
+
+// 
+
+
+    // 获取旷工数据
+    async getAbsentLateLeaveChangeworkList () {
+      let centerNameFromCentername = this.$store.state.centername
+      let currentTimeDate = this.currentTime.substring(0,10)
+      // 获取旷工
+      const resAbsentList = await getAbsentList1(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
+      if (resAbsentList && resAbsentList.data.ret === '200') {
+        // console.log('获取的旷工数据:', res)
+        this.kaoqinListSubCenter.absentData = {
+          absentList: resAbsentList.data.getAbsentList,
+          pagination: {
+            total: resAbsentList.data.total
+          }
+        }
+      }    
+
+      // 获取迟到
+      const resLateList = await getLateList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
+      if (resLateList && resLateList.data.ret === '200') {
+        // console.log('获取的迟到数据:', resLateList) // workno
+        this.kaoqinListSubCenter.lateData = {
+          lateList: resLateList.data.lateList,
+          pagination: {
+            total: resLateList.data.total
+          }
+        }
+      }
+      
+      // 获取离岗
+      const resOutList = await getOutList(centerNameFromCentername, 1, 1000)
+      if (resOutList && resOutList.data.ret === '200') {
+        // console.log('获取的离岗数据:', resOutList) // workno
+        this.kaoqinListSubCenter.leaveData = {
+          leaveList: resOutList.data.data.list,
+          pagination: {
+            total: resOutList.data.data.totalCount
+          }
+        }       
+      }
+
+      // 获取未派工
+      const resChangeWorkList = await getChangeWorkList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
+      if (resChangeWorkList && resChangeWorkList.data.ret === '200') {
+        // console.log('获取的未派工即调班数据:', resChangeWorkList) // workno
+        this.kaoqinListSubCenter.abnormalData = {
+          abnormalList: resChangeWorkList.data.changeWorkList,
+          pagination: {
+            total: resChangeWorkList.data.total
+          }
+        }
+      }
+    },
     // 点击加工中心重新请求数据
     selectedCenterName (centername) {
       this.centername = centername
+      this.$store.commit('changeCenterNameMut',centername)
       // 重新加载数据
       this.getBaseInfoData(this.centername)
       this.getYearLeftData(this.centername)
       this.getDayRightData(this.centername)
       this.getMonthRightData(this.centername)
       this.getYearRightData(this.centername)
-      // this.HourBetweenData(this.centername)
+
+      if (this.$store.state.centername!=='') {
+        // 获取(旷工/迟到/离岗/未派工)数据
+        this.getAbsentLateLeaveChangeworkList()
+      } else {
+        this.getAbnormaData()
+      }
     },
     // 获取加工中心个数
     getCenterNameLen (centernameLen) {
@@ -211,7 +332,7 @@ export default {
 <style lang="scss" scoped>
 .index{
   height:100%;
-  background-image: url(../assets/images/index_bg.png);
+  background-image: url(../../assets/images/index_bg.png);
   background-size: cover;
   color: rgb(255, 255, 255);
   background-repeat: no-repeat;overflow: hidden;

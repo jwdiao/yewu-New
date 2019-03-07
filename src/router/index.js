@@ -41,7 +41,9 @@ const Zaotui = r => require.ensure([], () => r(require('@/pages/business/zaotui'
 // 首页
 const FaceAndAttendance = r => require.ensure([], () => r(require('@/baobiaoPages/faceAndAttendance.vue')), 'FaceAndAttendance')
 // 考勤
-const HomeChecking = r => require.ensure([], () => r(require('@/baobiaoPages/checking.vue')), 'HomeChecking')
+const HomeCheckingV1 = r => require.ensure([], () => r(require('@/baobiaoPages/checking/index.vue')), 'HomeCheckingV1')
+const HomeCheckingV2 = r => require.ensure([], () => r(require('@/baobiaoPages/checking20190218/index.vue')), 'HomeCheckingV2')
+const HomeCheckingV3 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190221/Checking-v20190221.vue')), 'HomeCheckingV3')
 // 打卡
 const Vision = r => require.ensure([], () => r(require('@/baobiaoPages/vision.vue')), 'Vision')
 
@@ -67,9 +69,24 @@ const router = new Router({
       component: FaceAndAttendance
     },
     {
+      path: '/homecheckingV1',
+      name: 'HomeCheckingV1',
+      component: HomeCheckingV1
+    },
+    {
+      path: '/homecheckingV2',
+      name: 'HomeCheckingV2',
+      component: HomeCheckingV2
+    },
+    {
+      path: '/homecheckingV3',
+      name: 'HomeCheckingV3',
+      component: HomeCheckingV3
+    },
+    {
       path: '/homechecking',
-      name: 'HomeChecking',
-      component: HomeChecking
+      name: 'HomeCheckingV3',
+      component: HomeCheckingV3
     },
     {
       path: '/vision',

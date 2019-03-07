@@ -13,9 +13,9 @@
       </header>
       <img class="close" src="../../assets/images/close.png" @click="close" />
       <div class="centerNameScroll" ref="centerNameList" style="height: 700px;overflow: scroll">
-        <ul class="home_container_list">
-          <li v-for="(centerItem,index) in centername" :key="index" :ref="index" @click="getCenterInfo(centerItem)">{{centerItem}}</li>
-        </ul>
+      <ul class="home_container_list">
+        <li v-for="(centerItem,index) in centername" :key="index" :ref="index" @click="getCenterInfo(centerItem)">{{centerItem}}</li>
+      </ul>
       </div>
     </div>
   </div>

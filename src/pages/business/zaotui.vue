@@ -1,6 +1,5 @@
 <template>
 	<div class="">
-		<head-top></head-top>
 		<section class="data_section">
       <div class="index_main">
         <div class="index_left">

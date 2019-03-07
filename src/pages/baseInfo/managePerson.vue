@@ -1,7 +1,6 @@
 <template>
     <div>
         <!-- <div class="header_container">计件人员信息</div> -->
-        <head-top></head-top>
         <div class="source">
             <section class="el-container is-vertical">
                 <header class="el-header" style="height: 60px;">

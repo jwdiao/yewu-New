@@ -30,8 +30,8 @@
           <template slot="title"><i class="el-icon-document"></i>基础信息</template>
           <el-menu-item index="pieceinformation">计件人员信息</el-menu-item>
           <el-menu-item index="checkingcameras">考勤摄像头信息</el-menu-item>
-					<!-- <el-menu-item index="pieceWorker">计件人员</el-menu-item>
-					<el-menu-item index="managePerson">管理人员</el-menu-item> -->
+				  <el-menu-item index="pieceWorker">计件人员信息修改</el-menu-item>
+					<!-- <el-menu-item index="managePerson">管理人员</el-menu-item> -->
         </el-submenu>
         <el-submenu index="3">
           <template slot="title"><i class="el-icon-message"></i>派工信息</template>
@@ -48,6 +48,7 @@
       </el-menu>
     </el-aside>
     <el-main>
+			<head-top></head-top>
       <router-view></router-view>
       <!--<keep-alive>
       </keep-alive>-->
@@ -58,8 +59,12 @@
 
 <script>
   import {getCookieInfo} from '../api/getCookie'
+	import headTop from '../components/headTop'
   import { mapMutations } from 'vuex'
   export default {
+		components: {
+			headTop
+		},
     data () {
       return {
         username: this.$store.state.adminObj.username
