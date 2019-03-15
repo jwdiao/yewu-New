@@ -219,138 +219,6 @@
 					</el-scrollbar>
 
 				</el-tab-pane>
-				<!-- <el-tab-pane
-          label="能源指标列表"
-          name="energy"
-          v-if="this.$store.state.selectedSubcompany=='北京桩机'"
-        >
-        <div class="checking_energy">
-            <el-scrollbar style="height:100%;" v-show="$store.state.centername===''">
-              <div class="checking_item" v-for="(item, index) in $store.state.energyListData.list" :key="index">
-                <p class="checking_item-title">
-                  <span class="title" v-text="item.centerName"></span>
-                  <span class="numAndUnit">
-                    {{item.totalCount}}<em>台</em>
-                  </span>
-                </p>
-                <ul  class="checking_item-wrapper">
-                  <li>
-                    <span>开机小时数</span>
-                    <em>{{(item.bootHours/3600).toFixed(2)}}h</em>
-                  </li>
-                  <li>
-                    <span>作业小时数</span>
-                    <em>{{(item.workHours/3600).toFixed(2)}}h</em>
-                  </li>
-                  <li>
-                    <span>开机率</span>
-                    <em>{{item.bootRate}}</em>
-                  </li>
-                  <li>
-                    <span>作业率</span>
-                    <em>{{item.workRate}}</em>
-                  </li>
-                  <li>
-                    <span>总耗电量</span>
-                    <em>{{item.totalConsumPower}}</em>
-                  </li>
-                </ul>
-              </div>
-            </el-scrollbar>
-            <div class="checking_energyTable" v-show="$store.state.centername!==''">
-              <table>
-                <thead>
-                <tr>
-                  <th>序号</th>
-                  <th>设备名称</th>
-                  <th>开机(h)</th>
-                  <th>作业(h)</th>
-                  <th>开机率(%)</th>
-                  <th>作业率(%)</th>
-                  <th>总耗电量(度)</th>
-                  <th>当前状态</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(item, index) in $store.state.energyListData.list" :key="index">
-                  <td>{{index+1}}</td>
-                  <td>{{item.deviceName}}</td>
-                  <td>{{(item.bootHours/3600).toFixed(2)}}h</td>
-                  <td>{{(item.workHours/3600).toFixed(2)}}h</td>
-                  <td>{{item.bootRate}}</td>
-                  <td>{{item.workRate}}</td>
-                  <td>{{item.totalConsumPower}}</td>
-                  <td>{{deviceStatusText(item.deviceStatus)}}</td>
-                </tr>
-                </tbody>
-              </table>
-              <div class="common_paginaton">
-                <el-pagination
-                @current-change="handleCurrentChange"
-                :current-page.sync="$store.state.energyListData.page"
-                layout="total, prev, pager, next"
-                :total="$store.state.energyListData.totalCount">
-              </el-pagination>
-              </div>
-            </div>
-          </div>         
-        </el-tab-pane> -->
-				<!-- <el-tab-pane label="人员考勤查询" v-if="this.$store.state.selectedSubcompany=='北京桩机'" name="guiji">
-					<div class="checking_cameramap">
-						<div class="checking_list-search">
-							<div class="search_btn">
-								<div class="gosearch" @click="searchProInfo">搜索</div>
-								<div class="clear" @click="clearProInfo">清空</div>
-							</div>
-							<div class="search_input">
-								<input class="searchname" type="text" placeholder="姓名" ref="workname" @keyup="keyupevent">
-								<input class="searchtext" type="text" placeholder="工号" ref="worknum" @keyup="keyupevent">
-							</div>
-						</div>
-						<div class="checking_list-cameramap" id="checking_list-cameramap">
-							<ul class="camera-list" ref="camerawrap">
-								<li v-show="cameraArr.indexOf('办公楼北侧门_人脸1')+1" class="camera camera1">
-								</li>
-								<li v-show="cameraArr.indexOf('办公楼北侧门_人脸2')+1" class="camera camera2">
-								</li>
-								<li v-show="cameraArr.indexOf('办公楼北大门_人脸1')+1" class="camera camera3">
-								</li>
-								<li v-show="cameraArr.indexOf('办公楼北大门_人脸2')+1" class="camera camera4">
-								</li>
-								<li v-show="cameraArr.indexOf('机加区西侧入口_人脸2')+1" class="camera camera5">
-								</li>
-								<li v-show="cameraArr.indexOf('机加区西侧入口_人脸1')+1" class="camera camera6">
-								</li>
-								<li v-show="cameraArr.indexOf('A2门_人脸1')+1" class="camera camera7">
-								</li>
-								<li v-show="cameraArr.indexOf('A2门_人脸2')+1" class="camera camera8">
-								</li>
-								<li v-show="cameraArr.indexOf('机加区东侧入口_人脸2')+1" class="camera camera9">
-								</li>
-								<li v-show="cameraArr.indexOf('机加区东侧入口_人脸1')+1" class="camera camera10">
-								</li>
-								<li v-show="cameraArr.indexOf('D4门_人脸1')+1" class="camera camera11">
-								</li>
-								<li v-show="cameraArr.indexOf('D4门_人脸2')+1" class="camera camera12">
-								</li>
-								<div :class="{off:isShow}" class="scrollProInfoItem">
-									<div class="scrollProInfoItemInner">
-										<div v-for="(proItem,index) in personInfoArr" :key="index" :class="`personInfo${index}`">
-											<div class="num">{{personInfoArr.length - index}}</div>
-											<img :src="proItem.snappicurl" alt="">
-											<div class="information">
-												<div class="infoName">姓名: <span>{{proItem.workname}}</span></div>
-												<div class="infoNum">工号: <span>{{proItem.workno}}</span></div>
-												<div class="infoDepartment">部门: <span>{{proItem.department}}</span></div>
-												<div class="infoName">时间: <span>{{proItem.pushtime.substr(11,8)}}</span></div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</ul>
-						</div>
-					</div>
-				</el-tab-pane> -->
 			</el-tabs>
 
 
@@ -881,6 +749,7 @@
 					series: [{
 							name: '雷达图',
 							type: 'radar',
+							symbol: 'none',
 							itemStyle: {
 								emphasis: {
 									// color: 各异,
@@ -897,7 +766,7 @@
 								name: centerName,
 								areaStyle: {
 									normal: {
-										color: 'rgba(83, 227, 253, 0.5)'//遮罩层颜色
+										color: 'rgba(83, 227, 253, 0)'//遮罩层颜色
 									}
 								}
 							}]
@@ -949,20 +818,29 @@
 							let shanggangLv = ele.validRate<=100?ele.validRate:100 // 上岗率
 							let zaigangLv = ele.onWorkRate<=100?ele.onWorkRate:100 // 在岗率
 							let chuqinLv = ele.recordRate<=100?ele.recordRate:100 // 出勤率
+							let minValue = Math.min.apply(Math,[paigongLv, yichangLv, shanggangLv, zaigangLv, chuqinLv])
+							if(minValue>50){
+								minValue=50
+							}
 
 							let totalLv = yichangLv + paigongLv + shanggangLv + zaigangLv + chuqinLv
 							this.fuZhiBiaoList.push([paigongLv, yichangLv, shanggangLv, ele.onWorkRate, chuqinLv]);
 							this.indicatorList.push([{
 								name: '派工(' + ele.planNum + '人)',
+								min: minValue
 							}, {
 								// name: '异常\n(' + yichangNum + '人)',
 								name: "异常\n(" + yichangNum + "人)",
+								min: minValue
 							}, {
 								name: '上岗\n(' + ele.validNum + '人)',
+								min: minValue
 							}, {
 								name: '在岗\n(' + ele.onWorkTime + 'h)',
+								min: minValue
 							}, {
 								name: '出勤\n(' + ele.userRecordNum + '人)',
+								min: minValue
 							}]);
 					})
 					this.indicatorList.forEach((ele,index)=>{
@@ -1381,7 +1259,7 @@
 
 				/deep/ .el-tabs__item {
 					color: #335993;
-					padding: 0 50px;
+					padding: 0 50px !important;
 					font-weight: 700;
 					font-size: 22px;
 					height: 52px;
@@ -1724,5 +1602,7 @@
 				}
 			}
 		}
+
+		//
 	}
 </style>

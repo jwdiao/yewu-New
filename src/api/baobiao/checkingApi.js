@@ -1,5 +1,6 @@
 import http from '../http'
 import {getCookieInfo} from '../getCookie'
+// debugger;
 const baseUrlFromCookie = getCookieInfo().baseUrl
 
 

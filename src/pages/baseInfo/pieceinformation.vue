@@ -146,6 +146,13 @@
 														prop="worktype"
 														label="是否计件工">
 													</el-table-column>
+                          <el-table-column label="操作" width="100">
+                            <template slot-scope="scope">
+                              <el-button
+                                @click.native.prevent="deletepieceinformation(scope.$index, scope.row)"
+                                style="background: #ff404a;color: #fff;" size="small">删除</el-button>
+                            </template>
+                          </el-table-column>
                         </el-table>
                     </template>
                 </main>
@@ -190,7 +197,7 @@
                 dataList: [],
                 currentPage:1,   // 分页，当前页参数值设置
                 isShow:false,//数据导入是否显示,
-                // isShowFileList:true,//是否显示上传列表
+                 isShowFileList:true,//是否显示上传列表
             }
         },
         created(){
@@ -361,6 +368,52 @@
             let axiosUrl = getCookieInfo().baseUrl + '/userMessage/delete';
             // const res = await http.get("http://10.88.190.36:8083/userMessage/delete")
             const res = await http.get(axiosUrl)
+          },
+          //删除单条数据
+          /*函数名：deletePaigongRow
+          参数：index, rows：
+          描述：删除对应的每一行
+        * */
+          deletepieceinformation(index, rows) {
+            var id = rows.id
+            console.log('id:',rows)
+            this.$confirm('此操作将永久删除《'+rows.name+'》的记录, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+                //向后台发送请求
+               this.deleteSingleUser(id)
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+          },
+          /*函数名：deleteSingleUser，
+            参数：centername,date,workusernum
+            描述：删除
+           * */
+          async deleteSingleUser(id){
+            let axiosUrl = getCookieInfo().baseUrl + '/userMessage/deleteFindId';
+            const res = await http.post(axiosUrl,{id})
+            // const res = await http.post('http://10.88.190.36:8083/userMessage/deleteFindId',{id})
+            //刷新页面
+            this.searchDataFn ("1",this.pagesize)
+            if(res&&res.data.res.data.code=== 200){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              //刷新页面
+              this.searchDataFn ("1",this.pagesize)
+            }else{
+              this.$message({
+                type: 'error',
+                message: '删除失败!'
+              });
+            }
           },
         }
     }

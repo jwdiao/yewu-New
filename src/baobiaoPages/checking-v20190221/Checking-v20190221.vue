@@ -106,6 +106,7 @@ import {
   getChangeWorkList,
   getOutList
 } from '../../api/baobiao/checkingApi'
+import {getCookieInfo} from '../../api/getCookie'
 export default {
   name: 'Checking-v20190221',
   components: {
@@ -187,6 +188,10 @@ export default {
     }
   },
   mounted () {
+    
+// debugger;
+    const baseUrlFromCookie = getCookieInfo().baseUrl
+    axios.defaults.baseURL = baseUrlFromCookie
     // 顶部日期时间
     this.currentTime = this.getCurrentDateTime() // 显示顶部时间
     this.getDayOrNightTextFun() // 显示顶部显示白夜班
@@ -196,9 +201,8 @@ export default {
     }, 1000)
 
     this.$store.commit('changeCenterNameMut','') // 加工中心为''
-    this.$store.commit('changeSubcompanyMut','北京桩机')
+    this.$store.commit('changeSubcompanyMut','全部')
     this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
-
     // 基本信息顶部
     this.getBaseInfoData()
 
@@ -417,6 +421,11 @@ export default {
       this.getMonthRightData()
       this.getYearRightData()
 
+      // 切换雷达图的数据
+      if (this.$store.state.selectedTabCheckingBetween=='leida' && this.$store.state.centername!==''){
+        this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
+      }
+
       // 切换人员考勤列表
       if (this.$store.state.selectedTabCheckingBetween=='kaoqin' && this.$store.state.centername!=='') { // 子加工中心
         // 获取(旷工/迟到/离岗/未派工)数据
@@ -425,10 +434,7 @@ export default {
         this.getAbnormaData()
       }
 
-      // 切换雷达图的数据
-      if (this.$store.state.selectedTabCheckingBetween=='leida' && this.$store.state.centername!==''){
-        this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
-      }
+      
 
       // 切换能源指标的数据
       if (this.$store.state.selectedTabCheckingBetween=='energy') {  

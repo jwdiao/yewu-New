@@ -78,11 +78,11 @@ const router = new Router({
       name: 'HomeCheckingV2',
       component: HomeCheckingV2
     },
-    {
+    /* {
       path: '/homecheckingV3',
       name: 'HomeCheckingV3',
       component: HomeCheckingV3
-    },
+    }, */
     {
       path: '/homechecking',
       name: 'HomeCheckingV3',

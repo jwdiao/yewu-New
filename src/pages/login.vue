@@ -16,7 +16,7 @@
 						<el-input type="password" v-model="loginData.password" placeholder="请输入登录密码" @keyup.enter.native="login()"></el-input>
 					</el-form-item>
 					<el-form-item>
-							<el-button type="primary" :plain="true" class="submit_btn" @click="login()">登 &nbsp; 陆</el-button>
+							<el-button type="primary" :plain="true" class="submit_btn" @click.native="login()">登 &nbsp; 陆</el-button>
 					</el-form-item>
 				</el-form>
 			</section>
@@ -49,68 +49,6 @@ export default {
 		...mapActions([
       'loginAction'
     ]),
-
-    /*函数名：loginSytstem
-     参数：无
-     描述：登录请求
-    */
-    loginSytstem(){
-      const {userName,pwd} = this
-      if(!/^[1][0-9]{10}$/.test(userName) && !/^[a-zA-Z]{3,20}$/.test(userName)){
-        this.$message({
-          message: '请输入正确用户名/手机号',
-          type: 'warning',
-        })
-      }else if(!/^[0-9a-zA-Z]{6,20}$/.test(pwd)){
-        this.$message({
-          message: '输入正确密码格式',
-          type: 'warning',
-        });
-      }else{
-        this.$router.replace('/manage')
-      }
-		},
-		async loginOld () {
-			this.$refs.loginForm.validate(async (valid) => {
-				if (!valid) return;
-				const {username, password} = this.loginData
-				let loginStatus = false
-				if (username === 'syzj' && password === '123456') {
-					loginStatus = true
-				}
-				if (username === 'admin' && password === '123456') {
-					loginStatus = true
-				}
-				if (!loginStatus) {
-					this.$message({
-						type: 'error',
-						message: '用户名或密码错误！'
-					})
-					return false
-				}
-				/* const res = await this.$http.post('/login', this.formData);
-				const data = res.data;
-				if (data.meta.status === '200') {
-					this.$message({
-						type: 'success',
-						message: '登陆成功!'
-					}); */
-					let user = {
-						username: username,
-						// password: password,
-						token: '789789'
-					}
-					// 登陆成功，把token记录到session存储中
-					this.loginAction(user)
-					this.$router.push('/manage')
-				/* } else {
-					this.$message({
-						type: 'error',
-						message: data.meta.msg
-					})
-				} */
-			});
-		},
 		async login () {
 			this.$refs.loginForm.validate(async (valid) => {
 				if (!valid) return;
@@ -126,8 +64,9 @@ export default {
 				this.loginMethods(formData)
 			});
 		},
-		async loginMethods (formData) {
-			 const res = await $http.post('http://10.19.7.70:9084/SanyBasicUser/login', formData);			
+		async loginMethods (formData) {	
+			 const res = await $http.post('http://10.19.8.22:8100/threerelism/SanyBasicUser/login', formData);		
+			 
 				const dataInfo = res.data;
 				const userInfo = dataInfo.data
 				if (dataInfo.msg === 'ok') {
