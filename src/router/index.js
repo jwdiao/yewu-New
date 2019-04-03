@@ -11,6 +11,11 @@ const NoDataPage = r => require.ensure([], () => r(require('@/pages/noDataPage')
 //===============================基础信息=================================
 //计件人员信息
 const Pieceinformation = r => require.ensure([], () => r(require('@/pages/baseInfo/pieceinformation')), 'pieceinformation')
+//人员设备关联
+const personEquipment = r => require.ensure([], () => r(require('@/pages/baseInfo/personEquipment')), 'personEquipment')
+//设备信息查询
+const equipmentMessage = r => require.ensure([], () => r(require('@/pages/baseInfo/equipmentMessage')), 'equipmentMessage')
+
 // 考勤摄像头信息
 const CheckingCameras = r => require.ensure([], () => r(require('@/pages/baseInfo/checkingCameras')), 'checkingCameras')
 
@@ -111,6 +116,16 @@ const router = new Router({
         component: Pieceinformation,
         meta: ['基础信息', '计件人员信息']
       },
+			{
+			  path: '/personEquipment',
+			  component: personEquipment,
+			  meta: ['基础信息', '人员设备关联']
+			},
+			{
+			  path: '/equipmentMessage',
+			  component: equipmentMessage,
+			  meta: ['基础信息', '设备信息']
+			},
 			{
 				path: '/PieceWorker',
 				component: PieceWorker,

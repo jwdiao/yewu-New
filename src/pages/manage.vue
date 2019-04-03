@@ -29,6 +29,7 @@
         <el-submenu index="2">
           <template slot="title"><i class="el-icon-document"></i>基础信息</template>
           <el-menu-item index="pieceinformation">计件人员信息</el-menu-item>
+					<el-menu-item index="personEquipment">人员设备关联</el-menu-item>
           <el-menu-item index="checkingcameras">考勤摄像头信息</el-menu-item>
 				  <el-menu-item index="pieceWorker">计件人员信息修改</el-menu-item>
 					<!-- <el-menu-item index="managePerson">管理人员</el-menu-item> -->
@@ -37,6 +38,7 @@
           <template slot="title"><i class="el-icon-message"></i>派工信息</template>
           <el-menu-item index="paigong">派工信息导入</el-menu-item>
           <el-menu-item index="deletepaigong">派工信息删除</el-menu-item>
+					<el-menu-item index="equipmentMessage">设备派工信息</el-menu-item>
         </el-submenu>
         <el-submenu index="4">
           <template slot="title"><i class="el-icon-news"></i>业务信息</template>

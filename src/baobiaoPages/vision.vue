@@ -10,7 +10,7 @@
 			<em class="time" v-text="currentTime"></em>
 			<div class="home_head-btn" @click="cameraNameChange">
 				{{currentCenterName}}
-				<!--默认向下展开三角-->
+				<!--默认向下展开三角-->   
 				<div class="triangle_top" v-show="flag"></div>
 				<!--点击后向上收起-->
 				<div class="triangle_bottom" v-show="!flag"></div>
@@ -121,24 +121,43 @@
 				sanyAttendanceSiteList: [],
 				stateno:'',
 				timer:null,
+				timer1:null,
+				timer2:null,
 				selectedCamera: '' // 选中的摄像头
 			};
 		},
+		beforeDestroy(){
+			clearInterval(this.timer);
+			clearInterval(this.timer1);
+			clearInterval(this.timer2);
+			this.timer = null;
+			this.timer1 = null;
+			this.timer2 = null;
+		},
 		mounted() {
 			// 时间
+			this.selectedCamera = sessionStorage.selectedCamera!=''?sessionStorage.selectedCamera:''
+			sessionStorage.stateno = sessionStorage.stateno!=''?sessionStorage.stateno:''
 			this.currentTime = this.getCurrentDateTime();
-			setInterval(() => {
+			this.timer1 = setInterval(() => {
 				this.currentTime = this.getCurrentDateTime();
 			}, 1000);
 
 			// 获取摄像头下拉列表
 			this.getCameraList();
 			// 获取出入口数据
-			this.getVisionList({stateno:this.stateno});
-			this.timer = setInterval(() => {
+			this.getVisionList({stateno:sessionStorage.stateno});
+		    this.timer = setInterval(() => {
 				// console.log(this.stateno)
-				this.getVisionList({stateno:this.stateno});
-			}, 500);
+				this.getVisionList({stateno:sessionStorage.stateno});
+				
+			}, 500); 
+			this.timer2 = setInterval(() => {
+				window.location.reload();
+			},1000*3600)
+			/* this.$once('hook:beforeDestroy',() => {
+				clearInterval(timer)
+			}) */
 			 
 		},
 		methods: {
@@ -150,14 +169,16 @@
 			getCurrentDateTime() {
 				return moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 			},
-		  cameraNameChange() {
+		    cameraNameChange() {
 				// clearInterval(this.timer)
 				this.flag = !this.flag;
 			},
 			attendClick(currentCamera){//摄像头下拉列表点击事件	
 				this.selectedCamera = currentCamera.attendancesite
-				this.stateno = currentCamera.stateno
-				this.getVisionList({stateno:this.stateno}),
+				sessionStorage.selectedCamera =  currentCamera.attendancesite
+				//this.stateno = currentCamera.stateno
+				sessionStorage.stateno = currentCamera.stateno
+				this.getVisionList({stateno:sessionStorage.stateno}),
 				this.flag = !this.flag;
 			},
 			close() {

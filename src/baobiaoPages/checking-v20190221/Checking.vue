@@ -5,11 +5,11 @@
 				人员考勤看板
 				<span class="checking_total">计件总人数<em v-show="info && info.totalNum" v-text="info.totalNum"></em></span>
 			</p>
-			<div class="checking_dashbord">
+<!-- 			<div class="checking_dashbord">
 				<ul>
 					<li>
 						<div class="top">
-							<!-- 白班 -->
+				
 							<div class="item" v-show="isDayOrNigint==='白班'">
 								<span class="text">派工人数(白)</span>
 								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.planNum" v-text="info.planNum"></em>
@@ -20,8 +20,7 @@
 								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.nightPlanTotalNum" v-text="info.nightPlanTotalNum"></em>
 								<em class="num" v-show="!info || !info.nightPlanTotalNum">0</em>
 							</div>
-							<!-- 白班 end -->
-							<!-- 夜班 -->
+							
 							<div class="item" v-show="isDayOrNigint==='夜班'">
 								<span class="text">派工人数(白)</span>
 								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.dayPlanTotalNum" v-text="info.dayPlanTotalNum"></em>
@@ -32,7 +31,7 @@
 								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.planNum" v-text="info.planNum"></em>
 								<em class="num" v-show="!info || !info.planNum">0</em>
 							</div>
-							<!-- 夜班 end -->
+							
 						</div>
 						<div class="bottom">
 							<div class="lv lvBlue" id="jhkqlv"></div>
@@ -88,7 +87,127 @@
 						</div>
 					</li>
 				</ul>
+			</div> -->
+			<div class="checking_dashbord2">
+				<ul>
+					<li>
+						<div class="top">
+							<div class="item item-row1">
+								<span class="text">派工人数</span>
+								<em class="num" v-show="info&&info.totalPlanNum" v-text="info.totalPlanNum">0</em>
+								<em class="num" v-show="!info || !info.totalPlanNum" style="letter-spacing:-3px;">0</em>
+								<div class="dayNightNumBox">
+									<div class="line"></div>
+									<div class="con">									
+											<p>
+												白
+												<span v-text="info.dayPlanTotalNum">0</span>
+											</p>
+											<p>
+												夜
+												<span v-text="info.nightPlanTotalNum">0</span>
+											</p>
+									</div>
+								</div>
+							</div>
+							<div class="item item-row2">
+								<span class="text">实时派工</span>
+								<em class="num" style="letter-spacing:-3px;">{{info.planNum}}</em>
+								<em style="display: inline-block;vertical-align: middle;font-size: 0.24rem;color: #02c9fc;margin-left: 10px;">
+									({{isDayOrNigint.substring(0,1)}})
+								</em>								
+							</div>
+
+
+
+							<!-- 白班 -->
+							<!-- <div class="item" v-show="isDayOrNigint==='白班'">
+								<span class="text">派工人数(白)</span>
+								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.planNum" v-text="info.planNum"></em>
+								<em class="num" v-show="!info || !info.planNum">0</em>
+								<div class="dayNightNumBox">
+									<div>
+										<p>白268</p>
+										<p>夜268</p>
+									</div>
+								</div>
+							</div>
+							<div class="item" v-show="isDayOrNigint==='白班'">
+								<span class="text">派工人数(夜)</span>
+								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.nightPlanTotalNum" v-text="info.nightPlanTotalNum"></em>
+								<em class="num" v-show="!info || !info.nightPlanTotalNum">0</em>
+							</div> -->
+							
+							<!-- 白班 end -->
+							<!-- 夜班 -->
+							<!-- <div class="item" v-show="isDayOrNigint==='夜班'">
+								<span class="text">派工人数(白)</span>
+								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.dayPlanTotalNum" v-text="info.dayPlanTotalNum"></em>
+								<em class="num" v-show="!info || !info.dayPlanTotalNum">0</em>
+							</div>
+							<div class="item" v-show="isDayOrNigint==='夜班'">
+								<span class="text">派工人数(夜)</span>
+								<em class="num" style="letter-spacing:-3px;" v-show="info&&info.planNum" v-text="info.planNum"></em>
+								<em class="num" v-show="!info || !info.planNum">0</em>
+							</div> -->
+							<!-- 夜班 end -->
+						</div>
+						<div class="bottom">
+							<div class="lv lvBlue" id="jhkqlv"></div>
+							<p class="lvText">派工率</p>
+						</div>
+					</li>
+					<li>
+						<div class="top">
+							<div class="item item-row1">
+								<span class="text">考勤人数</span>
+								<em class="num" v-show="info&&info.userRecordNum" v-text="info.userRecordNum"></em>
+								<em class="num" v-show="!info || !info.userRecordNum">0</em>
+							</div>
+							<div class="item item-row2">
+								<span class="text">考勤时间</span>
+								<em class="num" v-show="info&&info.recordTime" style="letter-spacing:-3px;">{{Math.round(info.recordTime*10)/10}}h</em>
+								<em class="num" v-show="!info || !info.recordTime">0</em>
+							</div>
+						</div>
+						<div class="bottom">
+							<div class="lv lvYellow" id="kaoqinlv"></div>
+							<p class="lvText">出勤率</p>
+						</div>
+					</li>
+					<li>
+						<div class="top" style="text-align:center;">
+							<div class="item item-row1">
+								<span class="text">有效在岗时间</span>
+							</div>
+							<div class="item item-row2">
+								<p class="num" v-show="info&&info.onWorkTime" style="letter-spacing:-3px;">{{Math.round(info.onWorkTime*10)/10}}h</p>
+								<p class="num" v-show="!info || !info.onWorkTime">0</p>
+							</div>
+						</div>
+						<div class="bottom">
+							<div class="lv lvBlue" id="zaiganglv"></div>
+							<p class="lvText">在岗率</p>
+						</div>
+					</li>
+					<li>
+						<div class="top" style="text-align:center;">
+							<div class="item item-row1">
+								<span class="text">有效在岗人数</span>
+							</div>
+							<div class="item item-row2">
+								<p class="num" v-show="info&&info.validNum" v-text="info.validNum"></p>
+								<p class="num" v-show="!info || !info.validNum">0</p>
+							</div>
+						</div>
+						<div class="bottom">
+							<div class="lv lvYellow" id="yxsglv"></div>
+							<p class="lvText">有效上岗率</p>
+						</div>
+					</li>
+				</ul>
 			</div>
+
 		</div>
 
 		<div class="checking_wrapper">
@@ -458,7 +577,8 @@
 						startColor: '#0090ff',
 						endColor: '#00e2ff'
 					},
-					value: this.info.workPlanRate
+					// value: this.info.workPlanRate
+					value: this.info.newWorkPlanRate // 最新的
 				}
 				this.renderClock(jhkqlvEcharts, this.workPlanRateObj)
 
@@ -1030,6 +1150,121 @@
 						.num {
 							padding-top: 8px;
 						}
+					}
+				}
+			}
+		}
+				&_dashbord2 {
+			width: 100%;
+			height: calc(100% - 36px);
+			overflow: hidden;
+
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				height: 100%;
+				padding-top: 10px;
+
+				li {
+					background-color: rgba(42, 75, 133, 0.3);
+					padding: 0 10px;
+					height: 100%;
+					flex: 1;
+					margin-left: 6px;
+					text-align: center;
+
+					&:first-child {
+						margin-left: 0;
+					}
+
+					.text {
+						font-size: 0.20rem;
+						font-weight: 100;
+					}
+
+					.num {
+						font-size: 0.30rem;
+						color: #02c9fc;
+						font-family: fontnameRegular;
+					}
+
+					.lv {
+						width: 108px;
+						height: 108px;
+						margin: 0 auto;
+					}
+
+					.lvYellow {
+						background: url(../../assets/images/index_clock-yellow.png)
+					}
+
+					.lvBlue {
+						background: url(../../assets/images/index_clock-blue.png)
+					}
+
+					.lvText {
+						color: #c4c4c4;
+						// font-size:18px;
+						font-size: 0.18rem;
+						padding-bottom: 10px;
+					}
+
+					.top {
+						height: 104px;
+						overflow: hidden;
+						text-align: left;
+						line-height:1;
+						padding-top:20px;
+						
+						.item {
+							height:42px;
+							line-height:42px;
+							font-size:0.24rem;
+							font-size: 0;
+							.text {
+								display: inline-block;
+								vertical-align: middle;
+								text-align: left;
+							}
+
+							.num {
+								display: inline-block;
+								vertical-align: middle;
+								margin-left: 5px;
+							}
+						}
+						.dayNightNumBox{
+							line-height: 20px;
+							font-size: 0;
+							color: #02c9fc;
+							display: inline-block;
+							vertical-align: middle;
+							padding-left:3px;
+							.line{
+								width:1px;
+								height:34px;
+								background: #02c9fc;
+								vertical-align: middle;
+								display: inline-block;
+							}
+							.con{
+								vertical-align: middle;
+								display: inline-block;
+								padding-left: 4px;
+								font-size: 0.15rem;
+								span{
+									margin-left: -3px;
+									font-size: 0.16rem;
+									font-family: fontnameRegular;
+								}
+							}
+						}
+					}
+
+					.bottom {
+						margin-top: 15px;
+						padding-bottom: 10px;
 					}
 				}
 			}

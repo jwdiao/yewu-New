@@ -1,7 +1,7 @@
 import axios from 'axios'
-// import global from './global'
+import global from './global'
 
-// axios.defaults.baseURL = global.BASE_URL
+axios.defaults.baseURL = global.BASE_URL
 axios.defaults.timeout = 100000
 
 // 请求时拦截

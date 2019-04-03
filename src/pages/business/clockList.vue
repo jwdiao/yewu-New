@@ -61,6 +61,7 @@
               <el-table-column prop="workname" label="工号/姓名"></el-table-column>
               <el-table-column prop="pushtime" label="打卡时间"></el-table-column>
               <el-table-column prop="snapshotplace" label="摄像头名称"></el-table-column>
+              <el-table-column prop="department" label="工作中心"></el-table-column>
             </el-table>
 
 
@@ -175,7 +176,12 @@ export default {
         console.log('historyData:',this.historyData)
         this.pagination.dataCount = res.data.data.totalCount // 总数
         this.eventsnapimg = this.historyData[0].snappicurl //点击切换图片
-
+        //当工作中心为物业时，显示为未维护20190403
+        this.historyData.forEach(item=>{
+          if(item.department === '物业'){
+            item.department = '未维护'
+          }
+        })
       }
     },
     /*函数名：handleDateChange

@@ -83,11 +83,11 @@
                         </div>
                       </el-col>
                       <el-col :span="2">
-												<!--:show-file-list="isShowFileList"-->
                         <el-upload id="piecePersonInformationFormData" style="display:inline-block;background:none;margin-left: 72px;margin-top: 2px" :limit="1"
                                    class="upload-demo" ref="upload" accept=".xls,.xlsx"  action="/userPushRecord/find/all"
                                    :on-change="beforeUpload" :on-exceed="handleExceed"
                                    :on-remove="removeDoc"
+                                   :show-file-list="isShowFileList"
                                    :http-request="uploadSectionFile" :auto-upload="false">
                           <el-button id="upload-document" slot="trigger" icon="el-icon-upload2" type="success" plain style="background: rgba(0,200,0,0.8);color:#fff;margin-left: -8px;">新增导入</el-button>
                           <el-button style="width:120px; position: absolute;top: 10px;left: 130px;" type="primary" @click="submitUpload" v-show="isShow">确定</el-button>

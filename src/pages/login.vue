@@ -28,6 +28,9 @@
 import { mapActions } from 'vuex'
 import $http from '../api/http'
 import axios from 'axios'
+import CryptoJS from 'crypto-js'
+
+
 export default {
   data(){
     return{
@@ -48,7 +51,28 @@ export default {
   methods:{
 		...mapActions([
       'loginAction'
-    ]),
+		]),
+		//DES加密 Pkcs7填充方式
+		encryptByDES(message, key){
+			const keyHex = CryptoJS.enc.Utf8.parse(key);
+			const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+					mode: CryptoJS.mode.ECB,
+					padding: CryptoJS.pad.Pkcs7
+			});
+			return encrypted.toString();
+		},
+		//DES解密
+		decryptByDES(ciphertext, key){
+			const keyHex = CryptoJS.enc.Utf8.parse(key);
+			// direct decrypt ciphertext
+			const decrypted = CryptoJS.DES.decrypt({
+									ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
+			}, keyHex, {
+									mode: CryptoJS.mode.ECB,
+									padding: CryptoJS.pad.Pkcs7
+			});
+			return decrypted.toString(CryptoJS.enc.Utf8);
+		},
 		async login () {
 			this.$refs.loginForm.validate(async (valid) => {
 				if (!valid) return;
@@ -57,15 +81,27 @@ export default {
 				// const formData = new FormData();
 				// formData.append('loginAccount',username);
 				// formData.append('loginPwd',password);
+				
+
+
+/**
+ * 加密应用：
+ * const _key = username     const _password = password
+ * 加密：let xx = this.encryptByDES(_password,_key) // 输出：sHTd/9exYuk=
+ * 解密：let yy = this.decryptByDES(xx,_key) // 输出： 123456
+*/
+				
 				const formData = { 
 					loginAccount: username,
 					loginPwd: password
+					// loginPwd: this.encryptByDES(password,username) // 密码加密，后期放开
 				}
 				this.loginMethods(formData)
 			});
 		},
-		async loginMethods (formData) {	
-			 const res = await $http.post('http://10.19.8.22:8100/threerelism/SanyBasicUser/login', formData);		
+		async loginMethods (formData) {
+			 //const res = await $http.post('http://10.88.195.89:9084/SanyBasicUser/login', formData);				
+			 const res = await $http.post('http://10.19.8.22:9085/SanyBasicUser/login', formData);		
 			 
 				const dataInfo = res.data;
 				const userInfo = dataInfo.data
@@ -74,6 +110,8 @@ export default {
 						type: 'success',
 						message: '登陆成功!'
 					});
+					sessionStorage.selectedCamera= ''
+					sessionStorage.stateno = ''
 					let user = {
 						username: userInfo.loginAccount,
 						// password: userInfo.loginPwd,
