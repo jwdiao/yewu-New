@@ -19,7 +19,7 @@
               <el-select v-model="value" placeholder="加工中心" size="small"  @change="selectMachingCenter">
                 <el-option v-for="item in optionsOne" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
-              <el-button type="primary" class="deleteBtn" @click="deleteProInfo" size="small" style="width: 120px;margin-left: 60px;height:40px;">删除</el-button>
+              <el-button type="danger" class="deleteBtn" @click="deleteProInfo" size="small" style="background: #ff404a;color: #fff;width: 120px;margin-left: 60px;height:40px;">删除</el-button>
               <!--<div class="deleteBtn" @click="deleteProInfo">删除</div>-->
             </div>
             <!--&lt;!&ndash;中心列表&ndash;&gt;

@@ -44,42 +44,44 @@
 				</header>
 				<main class="el-main" style="padding-top: 0px;">
 					<template>
-						<el-table :data="dataList" stripe style="width: 100%;" height="625">
-							<el-table-column prop="num" label="序号" >
-							</el-table-column>
-							<el-table-column prop="name" label="姓名" >
-							</el-table-column>
-							<el-table-column prop="workNo" label="工号" >
-							</el-table-column>
-							<el-table-column prop="centerName" label="加工中心" >
-							</el-table-column>
-							<el-table-column prop="deviceName" label="设备名称">	        
-							</el-table-column>
-							<el-table-column prop="deviceCode" label="设备编号">
-							</el-table-column>
-							<el-table-column prop="threeleveldep" label="维护">
-								<template slot-scope="scope">
-									<el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary" icon="el-icon-edit">维护</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
+						<div class="common-table">
+              <el-table  header-row-class-name="table-header" border :data="dataList" stripe style="width: 100%;" height="625">
+                <el-table-column prop="num" label="序号" >
+                </el-table-column>
+                <el-table-column prop="name" label="姓名" >
+                </el-table-column>
+                <el-table-column prop="workNo" label="工号" >
+                </el-table-column>
+                <el-table-column prop="centerName" label="加工中心" >
+                </el-table-column>
+                <el-table-column prop="deviceName" label="设备名称">
+                </el-table-column>
+                <el-table-column prop="deviceCode" label="设备编号">
+                </el-table-column>
+                <el-table-column prop="threeleveldep" label="维护">
+                  <template slot-scope="scope">
+                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary" icon="el-icon-edit">维护</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 					</template>
 				</main>
 				<el-footer style="text-align: center;">
 					<template>
-						<el-pagination 
-						 @size-change="handleSizeChange" 
-						 @current-change="handleCurrentChange" 
+						<el-pagination
+						 @size-change="handleSizeChange"
+						 @current-change="handleCurrentChange"
 						 :current-page.sync="currentPage"
-						 :page-size="pageSize" 
-						 :background="true" 
-						 layout="  prev, pager, next, total,jumper,sizes" 
+						 :page-size="pageSize"
+						 :background="true"
+						 layout="  prev, pager, next, total,jumper,sizes"
 						 :total="alltotal">
 						</el-pagination>
 					</template>
 				</el-footer>
-				<el-dialog 
-				   title="收货地址" 
+				<el-dialog
+				   title="收货地址"
 				   :visible.sync="dialogTableVisible"
 				   @close="closeDialog">
 					<el-form :model="diaform" :inline="true">
@@ -118,13 +120,13 @@
 						</el-table-column>
 					</el-table>
 					<template>
-						<el-pagination 
-						 @size-change="diahandleSizeChange" 
-						 @current-change="diahandleCurrentChange" 
+						<el-pagination
+						 @size-change="diahandleSizeChange"
+						 @current-change="diahandleCurrentChange"
 						 :current-page.sync="diacurrentPage"
-						 :page-size="diapageSize" 
-						 :background="true" 
-						 layout="  prev, pager, next, total,jumper,sizes" 
+						 :page-size="diapageSize"
+						 :background="true"
+						 layout="  prev, pager, next, total,jumper,sizes"
 						 :total="diaalltotal">
 						</el-pagination>
 					</template>
@@ -178,7 +180,7 @@
 			}
 		},
 		created() {
-			
+
 		},
 		mounted() {
             this.machineList();
@@ -200,7 +202,7 @@
 				this.machineList();
 			},
 			closeDialog(){
-				
+
 				this.machineList()
 			},
 			diahandleCurrentChange(val){
@@ -216,7 +218,7 @@
 				})
 				newdelArr.splice(index,1)
 				this.userMessageMachineDel(row.id,olddelArr.join(','),newdelArr.join(','))
-				
+
 			},
 			handleSearch(){
 				this.sanyMachinefindByName();
@@ -242,7 +244,7 @@
 				   saveNew.push(ele.deviceCode);
 				})
 				saveNew.push(row.sxDeviceCode);
-				
+
 			    const item = {deviceCode:row.sxDeviceCode,deviceName:row.deviceName,id:this.locationId};
 				this.gridData.push(item)
 			    const result = [];
@@ -263,8 +265,8 @@
 				if(flag){
 				  this.userMessageMachineSave(this.locationId,saveOld.join(','),saveNew.join(','));
 				}
-				this.gridData = result 
-				
+				this.gridData = result
+
 			},
 			/*
 			  查询
@@ -287,7 +289,7 @@
 				})
 				this.CenterNameOption.unshift({value:'',label:'请选择'})
 			  }
-			
+
 			},
 			/*
 			 获取列表数据
@@ -306,7 +308,7 @@
 							}
 							item['deviceName'] = deviceNameArr.join(',');
 							item['num'] = (that.currentPage - 1)*that.pageSize+index+1;
-					}) 
+					})
 					this.dataList = res.data.data.list;
 					console.log('sss：',res.data.data);
 					this.alltotal = res.data.data.totalCount
@@ -332,7 +334,7 @@
 					 console.log('删除前的数据：',this.allNewDeviceCode);
 					this.diaform = res.data.data;//加载姓名和工号
 					this.gridData = machineArr;
-					
+
 					/* this.allNewDeviceCode = res.data.data; */
 					console.log('删除刘表',this.gridData)
 				}
@@ -351,8 +353,8 @@
 					   deletThat.userMessageMachine();
 					   //deletThat.machineList();
 					},500)
-					
-				} 	
+
+				}
 			},
 			/*
 			   计件人员关联设备接口

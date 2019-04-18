@@ -15,7 +15,7 @@
 				<!--点击后向上收起-->
 				<div class="triangle_bottom" v-show="!flag"></div>
 			</div>
-			<div class="currentCamera" v-text="selectedCamera"></div>
+			<div class="currentCamera" v-text="selectedCamera=='全部'?'':selectedCamera"></div>
 		</el-header>
 		<el-main>
 			<div class="item">
@@ -123,7 +123,7 @@
 				timer:null,
 				timer1:null,
 				timer2:null,
-				selectedCamera: '' // 选中的摄像头
+				selectedCamera:sessionStorage.selectedCamera =='undefined'?'全部':sessionStorage.selectedCamera // 选中的摄像头
 			};
 		},
 		beforeDestroy(){
@@ -135,21 +135,24 @@
 			this.timer2 = null;
 		},
 		mounted() {
-			// 时间
-			this.selectedCamera = sessionStorage.selectedCamera!=''?sessionStorage.selectedCamera:''
-			sessionStorage.stateno = sessionStorage.stateno!=''?sessionStorage.stateno:''
 			this.currentTime = this.getCurrentDateTime();
 			this.timer1 = setInterval(() => {
 				this.currentTime = this.getCurrentDateTime();
 			}, 1000);
-
+           
 			// 获取摄像头下拉列表
 			this.getCameraList();
 			// 获取出入口数据
-			this.getVisionList({stateno:sessionStorage.stateno});
+			
+			
+			
+			
 		    this.timer = setInterval(() => {
-				// console.log(this.stateno)
-				this.getVisionList({stateno:sessionStorage.stateno});
+				if(sessionStorage.stateno){
+				   this.getVisionList({stateno:sessionStorage.stateno});
+				}else{
+				   this.getVisionList({stateno:''});
+				}
 				
 			}, 500); 
 			this.timer2 = setInterval(() => {
@@ -190,7 +193,8 @@
 				const res = await $http.post(axiosUrl)
 				// const res = await $http.post("/sanyUserPushRecord/useRattendanceHisSelect")
 				if (res && res.data.ret=== "200"){					
-					this.sanyAttendanceSiteList =  res.data.sanyAttendanceSiteList		
+					this.sanyAttendanceSiteList =  res.data.sanyAttendanceSiteList
+					
 				}
 			},
 			async getVisionList(data) {//获取人脸信息
@@ -200,7 +204,7 @@
 					this.userInList = res.data.userInList? res.data.userInList: [];
 					this.userOutList = res.data.userOutList? res.data.userOutList: [];
 					this.nowObject = res.data.nowObject? res.data.nowObject: {snappicurl:''};
-					// console.log(this.nowObject);
+					
 				}				
 			}
 		},

@@ -14,6 +14,7 @@ export default {
 @import './assets/css/common.less';
 @import '../static/reset.css';
 @import './assets/css/font.css';
+@import './assets/css/elementCustom.less';
 #app {
   height:100%;
 }

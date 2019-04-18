@@ -38,7 +38,7 @@
                     </el-select>
                   </el-form-item>
                     <el-form-item class="submitBtn">
-                        <el-button type="primary" @click="searchDataFn" style="width: 100px">查询</el-button>
+                        <el-button type="primary" @click="searchDataFn">进行查询</el-button>
                     </el-form-item>
                   <a class="paigong_download" href="javascript:void(0);" @click="download">
                     <i class="el-icon-download" ></i>导出文件
@@ -47,42 +47,41 @@
             </el-row>
             <el-row>
             <template>
-              <div class="common-table">
-                <el-table
-                  :data="dataList"
-                  stripe  header-row-class-name="table-header" border
-                  style="width: 100%" height="600">
-                  <!--@row-click="getPersonInfo">-->
-                  <el-table-column
-                    type="index"
-                    label="序号"
-                    width="50">
-                  </el-table-column>
-                  <el-table-column
-                    prop="workname"
-                    label="姓名"
-                    width="200">
-                  </el-table-column>
-                  <el-table-column
-                    prop="workno"
-                    label="工号"
-                    width="200">
-                  </el-table-column>
-                  <el-table-column
-                    prop="department"
-                    label="归属中心">
-                  </el-table-column>
-                  <el-table-column
-                    prop="pushtime"
-                    label="首次打卡时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="snapshotplace"
-                    label="打卡地址">
-                  </el-table-column>
-                </el-table>
-              </div>
-
+               <div class="common-table">
+                 <el-table
+                   :data="dataList" header-row-class-name="table-header" border
+                   stripe
+                   style="width: 100%" height="600">
+                   <!--@row-click="getPersonInfo">-->
+                   <el-table-column
+                     type="index"
+                     label="序号"
+                     width="50">
+                   </el-table-column>
+                   <el-table-column
+                     prop="workName"
+                     label="姓名"
+                     width="200">
+                   </el-table-column>
+                   <el-table-column
+                     prop="workNo"
+                     label="工号"
+                     width="200">
+                   </el-table-column>
+                   <el-table-column
+                     prop="centerName"
+                     label="归属中心">
+                   </el-table-column>
+                   <el-table-column
+                     prop="pushTime"
+                     label="首次打卡时间">
+                   </el-table-column>
+                   <el-table-column
+                     prop="snapshotPlace"
+                     label="打卡地址">
+                   </el-table-column>
+                 </el-table>
+               </div>
             </template>
             <template>
                 <div class="block" style="padding: 20px; text-align: center;">
@@ -265,24 +264,24 @@
                 }
             },
             async getAllPersonList(){
-                let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getChangeWorkList';
+                // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getChangeWorkList';
                 // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getChangeWorkList';
               //20190409修改
               // let axiosUrl ='http://10.88.195.89:8083/userRecordException/list';
-              // let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list';
-              // const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:2,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
+              let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list';
+              const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:2,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
 
-              const result = await http.post(axiosUrl,{
-                workType: this.dayOrNight,
-                stopTime: this.searchDate,
-                centerName:this.personDepartment,
-                workname:this.personName,
-                workno:this.personNumber,
-                page: this.currentPage + '', pagesize: this.pageSize + ''})
+                /*const result = await http.post(axiosUrl,{
+                  workType: this.dayOrNight,
+                  stopTime: this.searchDate,
+                  centerName:this.personDepartment,
+                  workname:this.personName,
+                  workno:this.personNumber,
+                  page: this.currentPage + '', pagesize: this.pageSize + ''})*/
                 // const result = await http.post('sanyUserPushRecord/getChangeWorkList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
-                  this.dataList = result.data.changeWorkList;
-                  this.pageTotal = result.data.total;
+                  this.dataList = result.data.data.list;
+                  this.pageTotal = result.data.data.totalCount;
                 }
             },
           /*函数名：download
@@ -290,13 +289,13 @@
             描述：导出功能
           * */
           async  download () {
-            let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportChangeWorkList'
+            // let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportChangeWorkList'
             // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportChangeWorkList'
-            url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+            // url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
             //20190409修改
-            // let url ='http://10.88.195.89:8083/userRecordException/exportExceptionData';
-            // let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
-            // url = `${url}?workType=${this.workType}&queryDate=${this.searchTime}&recordStatus=2&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
+            // let url ='http://10.19.7.70:8089/userRecordException/exportExceptionData';
+            let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
+            url = `${url}?workType=${this.workType}&queryDate=${this.searchDate}&recordStatus=2&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
             url = (encodeURI(url));
             // window.open(url,'_blank');
             location.href = url

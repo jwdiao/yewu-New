@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <div class="header_container">调班人员列表</div> -->
         <section class="el-container is-vertical">
             <el-row style="margin-top: 40px; padding-left: 10px;">
                 <el-form :inline="true" class="demo-form-inline">
@@ -11,7 +10,7 @@
                         value-format="yyyy-MM-dd"
                         @change="listenDateFn"
                         :picker-options="pickerOptions0"
-                        placeholder="选择日期">
+                        placeholder="选择日期"><!---->
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="班次">
@@ -38,8 +37,9 @@
                     </el-select>
                   </el-form-item>
                     <el-form-item class="submitBtn">
-                        <el-button type="primary" @click="searchDataFn" style="width: 100px">查询</el-button>
+                        <el-button type="primary" @click="searchDataFn">进行查询</el-button>
                     </el-form-item>
+                  <!--<a  ref="download" :href="dataUrl"></a>-->
                   <a class="paigong_download" href="javascript:void(0);" @click="download">
                     <i class="el-icon-download" ></i>导出文件
                   </a>
@@ -47,42 +47,45 @@
             </el-row>
             <el-row>
             <template>
-              <div class="common-table">
-                <el-table
-                  :data="dataList"
-                  stripe  header-row-class-name="table-header" border
-                  style="width: 100%" height="600">
-                  <!--@row-click="getPersonInfo">-->
-                  <el-table-column
-                    type="index"
-                    label="序号"
-                    width="50">
-                  </el-table-column>
-                  <el-table-column
-                    prop="workname"
-                    label="姓名"
-                    width="200">
-                  </el-table-column>
-                  <el-table-column
-                    prop="workno"
-                    label="工号"
-                    width="200">
-                  </el-table-column>
-                  <el-table-column
-                    prop="department"
-                    label="归属中心">
-                  </el-table-column>
-                  <el-table-column
-                    prop="pushtime"
-                    label="首次打卡时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="snapshotplace"
-                    label="打卡地址">
-                  </el-table-column>
-                </el-table>
-              </div>
-
+                <div class="common-table">
+                  <el-table header-row-class-name="table-header" border
+                            :data="dataList"
+                            stripe
+                            style="width: 100%" height="600">
+                    <!--@row-click="getPersonInfo">-->
+                    <el-table-column
+                      type="index"
+                      label="序号"
+                      width="50">
+                    </el-table-column>
+                    <el-table-column
+                      prop="workName"
+                      label="姓名"
+                      width="140">
+                    </el-table-column>
+                    <el-table-column
+                      prop="workNo"
+                      label="工号"
+                      width="160">
+                    </el-table-column>
+                    <el-table-column
+                      prop="centerName"
+                      label="归属中心">
+                    </el-table-column>
+                    <el-table-column
+                      prop="pushTime"
+                      label="首次进门时间">
+                    </el-table-column>
+                    <el-table-column
+                      prop="snapshotPlace"
+                      label="打卡地址">
+                    </el-table-column>
+                    <el-table-column
+                      prop="startWorkplanTime"
+                      label="最早派工时间">
+                    </el-table-column>
+                  </el-table>
+                </div>
             </template>
             <template>
                 <div class="block" style="padding: 20px; text-align: center;">
@@ -103,37 +106,55 @@
         <section class="person-info" v-show="personInfoBool">
             <div class="container">
                 <div class="head" style="position: relative;">
+                    个人打卡详情
                     <button type="button" class="el-message-box__headerbtn close-person-info" @click="closePersonInfo" style="top: -10px; right: -3px;">
                         <i class="el-message-box__close el-icon-close"></i>
                     </button>
                 </div>
                 <div class="content">
                     <template>
-                        <el-table :data="tableData3" style="width: 100%;" :header-row-style="tableHeaderFn">
-                            <el-table-column label="打卡详情信息">
-                                <el-table-column
-                                  prop="jobNum"
-                                  label="工号">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="name"
-                                  label="姓名">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchTime"
-                                  label="打卡时间">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchType"
-                                  label="打卡类型">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchAddress"
-                                  label="打卡位置">
-                                </el-table-column>
+                    <el-table :data="tableData3" style="width: 63.5%; display: inline-block;" :header-row-style="tableHeaderFn">
+                        <el-table-column>
+                            <el-table-column
+                              prop="jobNum"
+                              label="工号"
+                              width="100">
                             </el-table-column>
-                        </el-table>
-                    </template>
+                            <el-table-column
+                              prop="name"
+                              label="姓名"
+                              width="80">
+                            </el-table-column>
+                        </el-table-column>
+                        <el-table-column label="打卡详情信息">
+                            <el-table-column
+                              prop="punchTime"
+                              label="打卡时间">
+                            </el-table-column>
+                            <el-table-column
+                              prop="punchType"
+                              label="打卡类型"
+                              width="80">
+                            </el-table-column>
+                            <el-table-column
+                              prop="punchAddress"
+                              label="打卡位置">
+                            </el-table-column>
+                        </el-table-column>
+                    </el-table>
+                    <el-table :data="tableData3" style="width: calc(36% - 10px); margin-left: 10px; display: inline-block;" :header-row-style="tableHeaderFn">
+                        <el-table-column label="派工详情信息">
+                            <el-table-column
+                              prop="DispatchingStart"
+                              label="派工开始时间">
+                            </el-table-column>
+                            <el-table-column
+                              prop="DispatchingEnd"
+                              label="派工结束时间">
+                            </el-table-column>
+                        </el-table-column>
+                    </el-table>
+                  </template>
                 </div>
             </div>
         </section>
@@ -144,6 +165,7 @@
     import headTop from '../../components/headTop'
     import http from '../../api/http'
     import {getCookieInfo} from '../../api/getCookie'
+
     export default {
         name: "dispatch-list",
         components: {
@@ -151,11 +173,11 @@
         },
         data() {
             return {
+              workType:1,
               personName:'',//员工姓名
               personNumber:'',//员工工号
               personDepartment:'',//员工归属中心
               departmentDataArr:[], //归属中心集合
-              workType:1,//白班：1 夜班：2
                 visible: false,
                 classes: [
                     {
@@ -173,6 +195,7 @@
                     }
                 },
                 searchDate: '', //时间值
+              dataUrl:'',  //导出路径
                 dataList: [],
                 currentPage: 1,   // 分页，当前页参数值设置
                 tableData3: [],
@@ -190,13 +213,13 @@
                 ],
                 currentDayOrNight: '白班',
                 currentDate: '',
-              centerName:'',//0212多加一个参数
+              centerName:'',///0212多加一个参数
             }
         },
         created(){
             this.setDefaultDate();
             this.getAllPersonList();
-          //加工中心
+            //加工中心
           this.getCenterName()
         },
         mounted(){},
@@ -218,7 +241,7 @@
                           label: '夜班'
                         }
                     ]
-                    //this.dayOrNight = '全班';
+                    // this.dayOrNight = '全天';
                 }else {
                     this.classes = this.currentDayClasses;
                     this.dayOrNight = this.currentDayOrNight;
@@ -248,7 +271,7 @@
                     this.dayOrNight = this.currentDayOrNight = '白班';
                 }else {
                     this.classes = this.currentDayClasses = [
-                        {
+                       {
                           value: '白班',
                           label: '白班'
                         }, {
@@ -265,59 +288,68 @@
                 }
             },
             async getAllPersonList(){
-                let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getChangeWorkList';
-                // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getChangeWorkList';
+                // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getLateList'
+                // let axiosUrl = 'http://10.19.7.70:8089/sanyUserPushRecord/getLateList'
               //20190409修改
-              // let axiosUrl ='http://10.88.195.89:8083/userRecordException/list';
-              // let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list';
-              // const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:2,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
+              //   let axiosUrl ='http://10.88.195.89:8083/userRecordException/list';
+              let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list'
+                const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:1,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
+                /*const result = await http.post(axiosUrl,{
+                  workType: this.dayOrNight,
+                  stopTime: this.searchDate,
+                  centerName:this.personDepartment,
+                  workname:this.personName,
+                  workno:this.personNumber,
+                  page: this.currentPage + '', pagesize: this.pageSize + ''})*/
 
-              const result = await http.post(axiosUrl,{
-                workType: this.dayOrNight,
-                stopTime: this.searchDate,
-                centerName:this.personDepartment,
-                workname:this.personName,
-                workno:this.personNumber,
-                page: this.currentPage + '', pagesize: this.pageSize + ''})
-                // const result = await http.post('sanyUserPushRecord/getChangeWorkList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+                // const result = await http.post('sanyUserPushRecord/getLateList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
-                  this.dataList = result.data.changeWorkList;
-                  this.pageTotal = result.data.total;
+                  this.dataList = result.data.data.list;
+                  this.pageTotal = result.data.data.totalCount;
                 }
             },
-          /*函数名：download
-            参数：
-            描述：导出功能
-          * */
-          async  download () {
-            let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportChangeWorkList'
-            // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportChangeWorkList'
-            url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
-            //20190409修改
-            // let url ='http://10.88.195.89:8083/userRecordException/exportExceptionData';
-            // let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
-            // url = `${url}?workType=${this.workType}&queryDate=${this.searchTime}&recordStatus=2&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
-            url = (encodeURI(url));
-            // window.open(url,'_blank');
-            location.href = url
-          },
 
-            async searchDataFn () {
-              this.currentPage = 1
+          /*
+           * 函数名：loadData
+           * 参数：
+           * 描述：导出文件
+           * */
+          /*async loadData(){
+            // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getAbsentList1';
+            const result = await http.post('http://10.88.195.89:8083/sanyUserPushRecord/exportLateList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
+            if(result && result.data && result.data.ret == 200){
+              this.dataUrl = result.data.data
+            }
+            console.log('dataUrl:',this.dataUrl)
+             setTimeout(()=>{this.$refs.download.click()},1000)
+          },*/
+         async  download () {
+           // let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
+           // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportLateList'
+           // url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+           //20190409修改
+           // let url ='http://10.19.7.70:8089/userRecordException/exportExceptionData';
+           let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
+           url = `${url}?workType=${this.workType}&queryDate=${this.searchDate}&recordStatus=1&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
+           url = (encodeURI(url));
+           // window.open(url,'_blank');
+           location.href = url
+          },
+            searchDataFn () {
               const {personName,personNumber,personDepartment} = this
-              console.log('personName:',personName)
+             /* console.log('personName:',personName)
               console.log('personNumber:',personNumber)
-              console.log('personDepartment:',personDepartment)
-                  this.getAllPersonList();
+              console.log('personDepartment:',personDepartment)*/
+              this.currentPage = 1;
+              this.getAllPersonList();
             },
-            async postPersonInfoAjax(name, jobNum){   // 获取个人信息详情
+            async postPersonInfoAjax(name, jobNum){
                 // alert(name+jobNum);
                 const result = await http.post('',{});
                 if(result && result.status == 200){
 
                 }
             },
-
 
           //选择加工中心
           selectMachingCenter(val){
@@ -356,7 +388,6 @@
           clearPersonNumber(){
             this.personNumber = ''
           },
-
 
             getPersonInfo: function(event){
                 this.personInfoBool = true;
@@ -401,7 +432,7 @@
           margin: -300px 15%;
           padding: 20px;
           .head {
-              height: 40px;
+              height: auto;
               line-height: 60px;
               text-align: center;
               font-size: 20px;

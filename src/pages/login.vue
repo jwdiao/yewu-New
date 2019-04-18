@@ -109,9 +109,7 @@ export default {
 					this.$message({
 						type: 'success',
 						message: '登陆成功!'
-					});
-					sessionStorage.selectedCamera= ''
-					sessionStorage.stateno = ''
+					}); 
 					let user = {
 						username: userInfo.loginAccount,
 						// password: userInfo.loginPwd,

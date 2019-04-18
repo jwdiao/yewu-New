@@ -49,56 +49,59 @@
 		        			<el-button type="primary" @click="searchDataFnClick" style="width: 120px;margin: 0 10px;">查询</el-button>
 		        		</div>
 		        	</el-col>
-		        
+
 		        	<!--数据导入与导出-->
-		 		        
+
 		        </el-row>
-		        
+
 		        <template>
-		            <el-table
-		              :data="dataList"
-		              stripe
-		              style="width: 100%" height="600">
-		              <!--@row-click="getPersonInfo">-->
-		              <el-table-column
-		                prop="num"
-		                label="序号"
-		                width="50">
-		                </el-table-column>
-		              <el-table-column
-		                prop="workName"
-		                label="姓名"
-		                width="140">
-		              </el-table-column>
-		              <el-table-column
-		                prop="workNo"
-		                label="工号"
-		                width="160">
-		              </el-table-column>
-					  <el-table-column
-					    prop="planDate"
-					    label="派工日期">
-					  </el-table-column>
-		              <el-table-column
-		                prop="startWorkTime"
-		                label="派工开始时间">
-		              </el-table-column>
-		              <el-table-column
-		                prop="endWorkTime"
-		                label="派工结束时间">
-		              </el-table-column>
-		              <el-table-column
-		                prop="deviceName"
-		                label="设备名称">
-		              </el-table-column>
-		              <el-table-column
-		                prop="startPlanTime"
-		                label="维护设备">
-						<template slot-scope="scope">
-							<el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary" icon="el-icon-edit">维护</el-button>
-						</template>
-		              </el-table-column>
-		            </el-table>
+              <div class="common-table">
+                <el-table  header-row-class-name="table-header" border
+                           :data="dataList"
+                           stripe
+                           style="width: 100%" height="600">
+                  <!--@row-click="getPersonInfo">-->
+                  <el-table-column
+                    prop="num"
+                    label="序号"
+                    width="50">
+                  </el-table-column>
+                  <el-table-column
+                    prop="workName"
+                    label="姓名"
+                    width="140">
+                  </el-table-column>
+                  <el-table-column
+                    prop="workNo"
+                    label="工号"
+                    width="160">
+                  </el-table-column>
+                  <el-table-column
+                    prop="planDate"
+                    label="派工日期">
+                  </el-table-column>
+                  <el-table-column
+                    prop="startWorkTime"
+                    label="派工开始时间">
+                  </el-table-column>
+                  <el-table-column
+                    prop="endWorkTime"
+                    label="派工结束时间">
+                  </el-table-column>
+                  <el-table-column
+                    prop="deviceName"
+                    label="设备名称">
+                  </el-table-column>
+                  <el-table-column
+                    prop="startPlanTime"
+                    label="维护设备">
+                    <template slot-scope="scope">
+                      <el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary" icon="el-icon-edit">维护</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+
 		        </template>
 		        <template>
 		            <div class="block" style="padding: 20px; text-align: center;">
@@ -115,8 +118,8 @@
 		            </div>
 		        </template>
 		        </el-row>
-				<el-dialog 
-				   title="收货地址" 
+				<el-dialog
+				   title="收货地址"
 				   :visible.sync="dialogTableVisible"
 				   @close="closeDialog">
 					<el-form :model="diaform" :inline="true">
@@ -139,7 +142,7 @@
 					<el-form :model="diaformSearch" :inline="true">
 						<el-form-item label="设备名称">
 							<el-input v-model="diaformSearch.name" autocomplete="off" placeholder="请输入">
-								
+
 							</el-input>
 						</el-form-item>
 						<el-form-item label="" >
@@ -157,13 +160,13 @@
 						</el-table-column>
 					</el-table>
 					<template>
-						<el-pagination 
-						 @size-change="diahandleSizeChange" 
-						 @current-change="diahandleCurrentChange" 
+						<el-pagination
+						 @size-change="diahandleSizeChange"
+						 @current-change="diahandleCurrentChange"
 						 :current-page.sync="diacurrentPage"
-						 :page-size="diapageSize" 
-						 :background="true" 
-						 layout="  prev, pager, next, total,jumper,sizes" 
+						 :page-size="diapageSize"
+						 :background="true"
+						 layout="  prev, pager, next, total,jumper,sizes"
 						 :total="diaalltotal">
 						</el-pagination>
 					</template>
@@ -212,7 +215,7 @@
             }
         },
         created(){
-           
+
         },
         mounted(){
 		   this.getCenterName();
@@ -220,13 +223,13 @@
 		},
         methods:{
           handleSizeChange(val){
-			 this.pageSize = val; 
+			 this.pageSize = val;
 			 this.currentPage = 1;
 			 this.workPlanMachine();
-		  },  
+		  },
           handleCurrentChange(val){
 			  this.currentPage = val
-			  this.workPlanMachine();	
+			  this.workPlanMachine();
 		  },
 		  diahandleSizeChange(val){
 			  this.diapageSize = val;
@@ -279,9 +282,9 @@
 			  this.gridData = result;
 			  this.deviceCode = row.sxDeviceCode;
 			  if(flag){
-				this.workPlanMachineSave();  
+				this.workPlanMachineSave();
 			  }
-			  
+
 		  },
 		  /*删除*/
 		  handleTopDelete(index,row){
@@ -289,7 +292,7 @@
 			  this.workPlanMachinedel(row.id)
 		  },
 		  searchDataFnClick(){
-		  	this.workPlanMachine();		  
+		  	this.workPlanMachine();
 		  },
 		 /*
 		   获取加工中心
@@ -304,7 +307,7 @@
 		 	})
 		 	this.CenterNameOption.unshift({value:'',label:'请选择'})
 		   }
-		 
+
 		 },
 		 /*派工人员设备信息接口*/
 		 async workPlanMachine() {
@@ -345,7 +348,7 @@
 				console.log('查询后上方的列表：',this.gridData)
 				console.log('通过ID派工人员信息：',res)
 			 }
-			
+
 		 },
 		 /*
 		   通过设备名称模糊搜素相关设备接口
@@ -376,7 +379,7 @@
 			 if(res && res.data.ret==200){
 				 //如果保存成功了在调用查询接口
 				 //this.workPlanMachineFind(this.locationId)
-				
+
 			 }
 		 } ,
 		   /*
@@ -389,7 +392,7 @@
 				  this.workPlanMachineFind(this.locationId)
 			  }
 		  }
-		    
+
         }
     }
 </script>

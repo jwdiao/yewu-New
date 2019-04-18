@@ -31,6 +31,8 @@ const DeletePaigong = r => require.ensure([], () => r(require('@/pages/dispatchI
 //===============================业务信息=====================================
 // 打卡列表
 const ClockList = r => require.ensure([], () => r(require('@/pages/business/clockList')), 'clockList')
+// 打卡列表同步0416
+const ClockListSync = r => require.ensure([], () => r(require('@/pages/business0409/clockListSync')), 'clockListSync')
 // 迟到统计
 const DispatchList = r => require.ensure([], () => r(require('@/pages/business/dispatchList')), 'dispatchList')
 // 调班信息
@@ -39,7 +41,13 @@ const ShiftList = r => require.ensure([], () => r(require('@/pages/business/shif
 const AbsentList = r => require.ensure([], () => r(require('@/pages/business/absentList')), 'absentList')
 // 早退---暂时不做
 const Zaotui = r => require.ensure([], () => r(require('@/pages/business/zaotui')), 'zaotui')
-
+//20190410新加信息
+// 迟到统计
+const DispatchListNEW = r => require.ensure([], () => r(require('@/pages/business0409/dispatchListNEW20190410')), 'dispatchListNEW20190410')
+// 调班信息
+const ShiftListNEW = r => require.ensure([], () => r(require('@/pages/business0409/shiftListNEW20190410')), 'shiftListNEW20190410')
+// 旷工信息
+const AbsentListNEW = r => require.ensure([], () => r(require('@/pages/business0409/absentListNEW20190410')), 'absentListNEW20190410')
 
 
 //===============================报表页面===============================================
@@ -98,7 +106,7 @@ const router = new Router({
       name: 'Vision',
       component: Vision
     },
-    
+
     // 后台管理
     {
       path: '/manage',
@@ -144,7 +152,7 @@ const router = new Router({
         path: '/paigong',
         component: Paigong,
         meta: ['派工信息', '派工信息导入']
-      }, {
+      },  {
         path: '/deletepaigong',
         component: DeletePaigong,
         meta: ['派工信息', '派工信息删除']
@@ -152,7 +160,11 @@ const router = new Router({
         path: '/clocklist',
         component: ClockList,
         meta: ['业务信息', '人脸打卡记录']
-      }, {
+      },  {
+          path: '/clocklistsync',
+          component: ClockListSync,
+          meta: ['业务信息', '人脸打卡记录同步']
+        },{
         path: '/dispatchList',
         component: DispatchList,
         // component: NoDataPage,
@@ -167,7 +179,19 @@ const router = new Router({
         component: ShiftList,
         // component: NoDataPage,
         meta: ['业务信息', '调班统计'],
-      }]
+      }, {
+          path: '/shiftListNEW',
+          component: ShiftListNEW,
+          meta: ['业务信息', '调班统计'],
+        }, {
+          path: '/absentNEW',
+          component: AbsentListNEW,
+          meta: ['业务信息', '旷工统计'],
+        }, {
+          path: '/dispatchListNEW',
+          component: DispatchListNEW,
+          meta: ['业务信息', '迟到统计'],
+        }]
     }
   ]
 })

@@ -1,82 +1,47 @@
 <template>
-	<div class=""  style="height:100%;overflow-y: hidden;">
+	<div class=""  style="height:93%;overflow-y: hidden;">
 		<section class="data_section" style="height:calc(100% + 24px); ;">
       <div class="index_main" style="height: 100%;overflow: hidden">
         <div class="index_left">
+
           <div class="index_left_bottom">
             <p class="home_title">人员信息列表</p>
             <div class="search">
-              <span class="search_name_module">姓&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：<input class="searchname" type="text" placeholder="请输入姓名" ref="workname" style="margin-left: 4px;"></span>
-              <span class="search_name_module">工&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：<input class="searchtext" type="text" placeholder="请输入工号" ref="worknum" style="margin-left: 4px;"></span>
-             <!--http://10.19.7.69:8080/importfile/pg.xlsx-->
-							<span class="paigong_download"
-							@click = "downClick">
-								<i class="el-icon-download"></i>下载文件
-							</span>
 							<!--植入日历-->
               <div class="selectDate">
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">开始时间：</span>
-                  <el-date-picker
-                    v-model="startDate"
-                    type="datetime"
-                    :picker-options="pickerOptions0"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="选择日期时间">
+                  <el-date-picker v-model="startDate" type="datetime" :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
                   </el-date-picker>
                 </div>
                 </template>
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">结束时间：</span>
-                  <el-date-picker
-                    v-model="endDate"
-                    type="datetime"
-                    :picker-options="pickerOptionsEnd"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="选择日期时间">
+                  <el-date-picker  v-model="endDate"  type="datetime" :picker-options="pickerOptionsEnd" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
                   </el-date-picker>
                 </div>
                 </template>
               </div>
-              <el-button style="width: 90px;height: 36px;" class="gosearching" type="primary" @click="searchProInfo" size="small">搜索</el-button>
-              <el-button style="width: 90px;height: 36px;" class="clear" type="primary" @click="clearProInfo" size="small"  >清空</el-button>
+              <el-button style="width: 80px; height: 36px;" class="gosearching" type="primary" @click="searchProInfo" size="small">搜索</el-button>
+              <el-button style="width: 80px;height: 36px;" class="clear" type="primary" @click="syncProInfo" size="small"  >同步</el-button>
               <!--<div class="gosearching" @click="searchProInfo">搜索</div>
               <div class="clear" @click="clearProInfo">清空</div>-->
             </div>
 
-            <div  class="common-table">
-              <el-table stripe header-row-class-name="table-header" border :data="historyData"
-                style="width: 100%" height="600" @row-click="addImg">
-                <el-table-column
-                  type="index"
-                  label="序号"
-                  width="50">
-                </el-table-column>
+            <div class="common-table">
+              <el-table   stripe :data="historyData" header-row-class-name="table-header" border  style="width: 100%;"  height="600"
+                          v-loading="loadingsync" element-loading-text="正在同步中……"  element-loading-spinner="el-icon-loading"
+                          element-loading-background="rgba(0, 0, 0, 0.6)"
+                          @row-click="addImg">
+                <el-table-column  type="index" label="序号" width="50"> </el-table-column>
                 <el-table-column prop="workname" label="工号/姓名"></el-table-column>
                 <el-table-column prop="pushtime" label="打卡时间"></el-table-column>
                 <el-table-column prop="snapshotplace" label="摄像头名称"></el-table-column>
                 <el-table-column prop="department" label="工作中心"></el-table-column>
               </el-table>
             </div>
-
-
-
-            <!--<div class="title"><span>工号/姓名</span>&lt;!&ndash;<span>部门</span>&ndash;&gt;  <span>打卡时间</span><span>摄像头名称</span></div>
-            <div>
-              <div class="index_left_bottom_main">
-                <div class="message">
-                  <div class="title_message" v-for="(item,index) in historyData" :key="index" @click="addImg(index)">
-                    <span>{{item.workname}}</span>
-                    &lt;!&ndash;<span>{{item.department}}</span>&ndash;&gt;
-                    <span>{{item.pushtime}}</span>
-                    <span>{{item.snapshotplace}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>-->
-
             <el-pagination style="margin-top: 20px; text-align: center" background :page-sizes="[20,50,100]"
               :page-size="pagination.pageSize"  :current-page="pagination.page" :pager-count="7" :total="pagination.dataCount" layout="total,sizes, prev, pager, next, jumper"
               @current-change="currentChange" @prev-click="prevClick" @next-click="nextClick" @size-change="handleSizeChange" ><!--@size-change="handleSizeChange"-->
@@ -106,6 +71,7 @@ export default {
 	},
   data() {
     return {
+      loadingsync:false,//同步加载中
       pickerOptions0: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -166,9 +132,7 @@ export default {
       console.log('人脸打卡记录页面：',axiosUrl)
       // debugger;
       const res = await http.post(axiosUrl,{'workno':workno,'workname':workname,'start':start,'end':end,'startTime':this.startDate,'endTime':this.endDate})
-
       // const res = await http.post('/userPushRecord/find/all',{'workno':workno,'workname':workname,'start':start,'end':end,'startTime':this.startDate,'endTime':this.endDate})
-
       if (res.data.ret === "200") {
         this.historyData = res.data.data.list // 当前页的数据
         console.log('historyData:',this.historyData)
@@ -216,26 +180,7 @@ export default {
       }
 
     },
-		downClick(){
-				//this.downHref = "dasadasdasdasd"
-				//userPushRecord/exportexcel/{workname}/{workno}/{startTime}/{endTime}
-        if(this.startDate && this.endDate){
-					const workname = this.$refs.workname.value?this.$refs.workname.value:0;
-					const workno = this.$refs.worknum.value?this.$refs.worknum.value:0;
-					const startTime = this.startDate?this.startDate:0;
-					const endTime = this.endDate?this.endDate:0;
-					const axiosUrl = getCookieInfo().baseUrl;
-			    const myHref = `${axiosUrl}/userPushRecord/exportexcel/${workname}/${workno}/${startTime}/${endTime}`
-					console.log(myHref);
-					window.location.href = myHref
-				}else{
-					this.$message({
-						type:'error',
-						message:'下载文件必须填写开始时间和结束时间'
-					})
-				}
 
-		},
     /*函数名：handleDataSearch
      参数：无
      描述：根据当前选择的信息检索
@@ -250,22 +195,26 @@ export default {
       // page = 1
       this.getEventInfoList(workno, workname, page, pageSize)
     },
-    /*函数名：clearProInfo
-     参数：无
-     描述：清空input与当前选择项
+    /*@name：刁俊文
+     @date：2019.04.16
+     @info：syncProInfo:同步数据函数
    * */
-    clearProInfo(){
-      this.$refs.workname.value=""
-      this.$refs.worknum.value =""
-      let { workno, workname } = this
-      let { page, pageSize } = this.pagination
-      this.startDate = '';
-      this.endDate = '';
-      workno = ''
-      workname = ''
-      page = page.toString()
-      pageSize = pageSize.toString()
-      this.getEventInfoList(workno,workname,page,pageSize)
+    syncProInfo(){
+      this.loadingsync = true //正在同步中
+      //调用同步接口,返回的数据进行分页
+
+
+      //同步成功后，用户点击确认按钮
+      setTimeout(()=>{
+        this.loadingsync = false
+        this.$message({
+          showClose: true,
+          message: '同步完成',
+          type: 'success',
+          duration:0,
+        });
+      },3000)
+
     },
     /*函数名：addImg
      参数：index：当前选项
@@ -364,8 +313,8 @@ export default {
           margin-bottom: 10px;
           display: inline-block;
           input {
-            width: 64%;
-            height: calc(100% - 0px);
+            width: 61%;
+            height: calc(100% - 2px);
             outline: none;
             padding-left: 10px;
             background: rgba(56, 142, 237, 0.2);

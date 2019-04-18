@@ -112,58 +112,58 @@
                   </el-form-item>
 
                   <el-form-item class="submitBtn">
-                    <el-button type="primary" @click="searchProInfo">进行查询</el-button>
+                    <el-button type="primary" @click="searchProInfo" style="width: 100px">查询</el-button>
                   </el-form-item>
 
                 </el-form>
               </el-row>
             </section>
 
-
-            <el-table
-              stripe
-              :data="historyData"
-              style="width: 100%"
-              height="550">
-              <el-table-column
-                type="index"
-                label="序号"
-                width="50">
-              </el-table-column>
-              <el-table-column prop="machinename" label="中心名称">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.machinename }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="workusernum" label="工号/姓名">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.workusernum }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="startworktime" label="派工开始时间">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.startworktime }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="endworktime" label="派工结束时间">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.endworktime }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="planDate" label="派工日期">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.planDate }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button
-                    @click.native.prevent="deletePaigongRow(scope.$index, scope.row)"
-                    style="background: #ff404a;color: #fff;" size="small">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-
+            <div class="common-table">
+              <el-table
+                stripe
+                :data="historyData" header-row-class-name="table-header" border
+                style="width: 100%"
+                height="550">
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  width="50">
+                </el-table-column>
+                <el-table-column prop="machinename" label="中心名称">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.machinename }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="workusernum" label="工号/姓名">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.workusernum }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="startworktime" label="派工开始时间">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.startworktime }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="endworktime" label="派工结束时间">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.endworktime }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="planDate" label="派工日期">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.planDate }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button
+                      @click.native.prevent="deletePaigongRow(scope.$index, scope.row)"
+                      style="background: #ff404a;color: #fff;border-radius: 5px" size="small">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
             <!--分页器-->
             <el-pagination style="text-align: center" background :page-sizes="[10,20,30,50,100]" :current-page="pagination.page"
               :page-size="pagination.pageSize" :pager-count="7" :total="pagination.dataCount" layout="total,sizes,prev, pager, next, jumper"
@@ -351,8 +351,8 @@ export default {
       if (!date) date = this.currentYear+"-"+this.currentMon+"-"+this.currentDay
 
       let axiosUrl = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/getListOfNewUpload';
-      // let axiosUrl = 'http://10.88.190.36:8083/sanyWorkPlanExcel/getListOfNewUpload';
-      console.log('派工信息导入：',axiosUrl)
+      // let axiosUrl = 'http://10.88.195.89:8083/sanyWorkPlanExcel/getListOfNewUpload';
+      // console.log('派工信息导入：',axiosUrl)
       const res = await http.post(axiosUrl,{'centername':centername,'workusernum':workNumberName,'date':date,'page':page,'pagesize':pageSize})
       // const res = await http.post("/sanyWorkPlanExcel/getListOfNewUpload",{'centername':centername,'date':date,'page':page,'pagesize':pageSize})
       if (res.data.ret === "200") {
@@ -445,26 +445,17 @@ export default {
         // console.log('planDateTime:',planDateTime)
         // console.log('currentDateTime:',currentDateTime)
         if(planDateTime > currentDateTime){
-          const {historyData} = this
-          var newHisoryData = []
-          console.log('删除行：',rows)
-          for (var i = 0; i < historyData.length; i++) {
-            if(historyData[i].workusernum !== rows.workusernum){
-               newHisoryData.push(historyData[i])
-            }
-          }
-          this.historyData = newHisoryData
-          console.log('this.historyData:',this.historyData)
           //向后台发送请求
-          this.deleteSingleUser(rows.machinename,rows.planDate,rows.workusernum)
+          this.deleteSingleUser(rows.id,rows.planDate,rows.workusernum)
           this.$message({
             type: 'success',
             message: '删除成功!'
           });
+
         }else{
           this.$message({
             type: 'error',
-            message: '仅允许删除当日08:00之后记录! 请重新选择'
+            message: '数据已生效，不允许删除'
           });
         }
       }).catch(() => {
@@ -478,10 +469,18 @@ export default {
       参数：centername,date,workusernum
       描述：删除
      * */
-    async deleteSingleUser(centername,date,workusernum){
+    async deleteSingleUser(id,date,workusernum){
       let axiosUrl = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/deleteOneUserWorkPlan';
-      console.log('删除派工：',axiosUrl)
-      const res = await http.post(axiosUrl,{'centername':centername,'date':date,'workusernum':workusernum})
+      // let axiosUrl = 'http://10.88.195.89:8083/sanyWorkPlanExcel/deleteOneUserWorkPlan';
+      const res = await http.post(axiosUrl,{'id':id,'date':date,'workusernum':workusernum})
+      if(res&&res.data.ret==='200'){
+        //刷新列表
+        let {searchTime,machingCenterName,workNumberName} = this
+        let {pageSize} =this.pagination
+        this.pagination.page = 1
+        pageSize = pageSize.toString()
+        this.getWorkPlanInfoList(machingCenterName,workNumberName,searchTime,this.pagination.page,pageSize)
+      }
     },
     /*函数名：selectMachingCenter，
       参数：val：选择的当前options的value值（选项）

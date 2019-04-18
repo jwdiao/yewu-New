@@ -37,7 +37,7 @@
             </el-select>
           </el-form-item>
           <el-form-item class="submitBtn">
-            <el-button type="primary" @click="onSubmit" style="width: 100px">查询</el-button>
+            <el-button type="primary" @click="onSubmit">进行查询</el-button>
           </el-form-item>
           <a class="paigong_download" href="javascript:void(0);" @click="download">
             <i class="el-icon-download" ></i>导出文件
@@ -47,10 +47,10 @@
       <el-row>
         <template>
           <div class="common-table">
-            <el-table  header-row-class-name="table-header" border
-              :data="tableData"
-              stripe
-              style="width: 100%" height="600">
+            <el-table header-row-class-name="table-header" border
+                      :data="tableData"
+                      stripe
+                      style="width: 100%" height="600">
               <el-table-column
                 type="index"
                 label="序号"
@@ -65,20 +65,19 @@
                 label="工号">
               </el-table-column><!--num workNo-->
               <el-table-column
-                prop="machinename"
+                prop="centerName"
                 label="归属中心">
               </el-table-column>
               <el-table-column
-                prop="startworktime"
+                prop="startWorkplanTime"
                 label="旷工日期">  <!--planDate-->
               </el-table-column>
-              <el-table-column
+              <!--<el-table-column
                 prop="remark"
                 label="备注">
-              </el-table-column>
+              </el-table-column>-->
             </el-table>
           </div>
-
         </template>
         <template>
           <div class="block" style="padding: 20px; text-align: center;">
@@ -194,22 +193,22 @@
         this.getRenderData();
       },
       async getRenderData(){
-         let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getAbsentList1';
+         // let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getAbsentList1';
          // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getAbsentList1';
         //20190409修改
         // let axiosUrl ='http://10.88.195.89:8083/userRecordException/list';
-        // let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list';
-        // const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:3,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
+        let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list';
+        const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:3,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
 
-        const result = await http.post(axiosUrl,{
+       /* const result = await http.post(axiosUrl,{
           workType: this.dayOrNight,
           stopTime: this.searchDate,
           centername:this.personDepartment,
           workname:this.personName,
           workno:this.personNumber,
-          page: this.currentPage + '', pagesize: this.pageSize + ''})
+          page: this.currentPage + '', pagesize: this.pageSize + ''})*/
         if(result && result.data && result.data.ret == 200){
-          const arr = result.data.getAbsentList;
+          const arr = result.data.data.list;
           /*console.log(arr)
           const newArr = [];
           arr.length ? arr.forEach(function (v) {
@@ -222,10 +221,10 @@
           }) : null;
           // this.tableData = newArr;*/
           arr.forEach(item=>{
-            item.startworktime = item.startworktime.substr(0,10)
+            item.startWorkplanTime = item.startWorkplanTime.substr(0,10)
           })
           this.tableData = arr;
-          this.pageTotal = result.data.total;
+          this.pageTotal = result.data.data.totalCount;
         }
       },
 
@@ -307,13 +306,13 @@
        描述：导出功能
      * */
       async  download () {
-        let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportAbsentList'
+        // let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportAbsentList'
         // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportAbsentList'
-        url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centername=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+        // url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centername=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
         //20190409修改
-        // let url ='http://10.88.195.89:8083/userRecordException/exportExceptionData';
-        // let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
-        // url = `${url}?workType=${this.workType}&queryDate=${this.searchDate}&recordStatus=3&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
+        // let url ='http://10.19.7.70:8089/userRecordException/exportExceptionData';
+        let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
+        url = `${url}?workType=${this.workType}&queryDate=${this.searchDate}&recordStatus=3&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
         url = (encodeURI(url));
         //window.open(url,'_blank');
         location.href=  url;

@@ -41,7 +41,7 @@
                       </el-col>
                       <el-col :span="3">
                         <template>
-                          <el-select v-model="worktype" placeholder="请选择" @change="workTypeChange()">
+                          <el-select v-model="worktype" placeholder="请选择" >
                             <el-option v-for="item in workTypeOptions" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                           </el-select>
@@ -77,14 +77,9 @@
                           </a>
                         </div>
                       </el-col>
-                      <el-col :span="1" style="margin-top: 2px">
-                        <div class="grid-content bg-purple">
-                          <el-button type="primary" @click="deleteAllDataClick" style="width: 120px;margin: 0 -5px;">删除全部数据</el-button>
-                        </div>
-                      </el-col>
                       <el-col :span="2">
 												<!--:show-file-list="isShowFileList"-->
-                        <el-upload id="piecePersonInformationFormData" style="display:inline-block;background:none;margin-left: 72px;margin-top: 2px" :limit="1"
+                        <el-upload id="piecePersonInformationFormData" style="display:inline-block;background:none;margin-left: 2px;margin-top: 2px" :limit="1"
                                    class="upload-demo" ref="upload" accept=".xls,.xlsx"  action="/userPushRecord/find/all"
                                    :on-change="beforeUpload" :on-exceed="handleExceed"
                                    :on-remove="removeDoc"
@@ -95,70 +90,78 @@
                       </el-col>
                       <el-col :span="1" style="margin-top: 2px">
                         <div class="grid-content bg-purple">
-                          <el-button type="primary" @click="addAllDataClick" style="width: 120px;margin: 0 63px;">新增</el-button>
+                          <el-button type="primary" @click="addAllDataClick" style="width: 120px;margin: 0 -2spx;">新增</el-button>
+                        </div>
+                      </el-col>
+                      <el-col :span="1" style="margin-top: 2px">
+                        <div class="grid-content bg-purple">
+                          <el-button type="danger" @click="deleteAllDataClick" style="background: #ff404a;color: #fff;width: 120px;margin: 0 72px;">删除全部数据</el-button>
                         </div>
                       </el-col>
 
+
 										</el-row>
                 </header>
-                <main class="el-main" style="padding-top: 0px;">
+                <main class="el-main" style="padding-top: 10px;">
                     <template>
-                        <el-table
-                          :data="dataList"
-                          stripe
-                          style="width: 100%;"
-													height="625"
+                        <div class="common-table">
+                          <el-table  header-row-class-name="table-header" border
+                                     :data="dataList"
+                                     stripe
+                                     style="width: 100%;"
+                                     height="625"
                           >
-                          <el-table-column
-                                prop="serial"
-                                label="序号"
-                                width="50">
+                            <el-table-column
+                              prop="serial"
+                              label="序号"
+                              width="50">
                             </el-table-column>
-                          <el-table-column
-                            prop="name"
-                            label="姓名"
-														width="100"
+                            <el-table-column
+                              prop="name"
+                              label="姓名"
+                              width="100"
                             >
-                          </el-table-column>
-                          <el-table-column
-                            prop="workno"
-                            label="工号"
-														width="100"
+                            </el-table-column>
+                            <el-table-column
+                              prop="workno"
+                              label="工号"
+                              width="100"
                             >
-                          </el-table-column>
-                          <el-table-column
-                            prop="sex"
-                            label="性别"
-														width="100">
-                          </el-table-column>
-                          <el-table-column
-                            prop="firstleveldep"
-                            label="一级部门">
-                          </el-table-column>
-                          <el-table-column
-                            prop="twoleveldep"
-                            label="二级部门">
-                          </el-table-column>
-                          <el-table-column
-                            prop="threeleveldep"
-                            label="工作中心">
-                          </el-table-column>
-													<el-table-column
-														prop="positionname"
-														label="职位">
-													</el-table-column>
-													<el-table-column
-														prop="worktype"
-														label="是否计件工">
-													</el-table-column>
-                          <el-table-column label="操作" width="100">
-                            <template slot-scope="scope">
-                              <el-button
-                                @click.native.prevent="deletepieceinformation(scope.$index, scope.row)"
-                                style="background: #ff404a;color: #fff;" size="small">删除</el-button>
-                            </template>
-                          </el-table-column>
-                        </el-table>
+                            </el-table-column>
+                            <el-table-column
+                              prop="sex"
+                              label="性别"
+                              width="100">
+                            </el-table-column>
+                            <el-table-column
+                              prop="firstleveldep"
+                              label="一级部门">
+                            </el-table-column>
+                            <el-table-column
+                              prop="twoleveldep"
+                              label="二级部门">
+                            </el-table-column>
+                            <el-table-column
+                              prop="threeleveldep"
+                              label="工作中心">
+                            </el-table-column>
+                            <el-table-column
+                              prop="positionname"
+                              label="职位">
+                            </el-table-column>
+                            <el-table-column
+                              prop="worktype"
+                              label="是否计件工">
+                            </el-table-column>
+                            <el-table-column label="操作" width="100">
+                              <template slot-scope="scope">
+                                <el-button
+                                  @click.native.prevent="deletepieceinformation(scope.$index, scope.row)"
+                                  style="background: #ff404a;color: #fff;" size="small">删除</el-button>
+                              </template>
+                            </el-table-column>
+                          </el-table>
+                        </div>
                     </template>
                 </main>
               <!--新增-->

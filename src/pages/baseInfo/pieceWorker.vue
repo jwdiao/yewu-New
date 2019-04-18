@@ -6,7 +6,7 @@
 				<header class="el-header" style="height: 60px;">
 					<el-row :gutter="10" style="margin-bottom:2px;">
 						<!--gutter属性来指定每一栏之间的间隔-->
-						<el-col :span="2">
+						<el-col :span="0.5">
 							<div class="grid-content bg-purple">
 								姓名
 							</div>
@@ -14,7 +14,7 @@
 						<el-col :span="3">
 							<el-input v-model="name" placeholder="请输入内容"></el-input>
 						</el-col>
-						<el-col :span="2">
+						<el-col :span="0.5">
 							<div class="grid-content bg-purple">
 								工号
 							</div>
@@ -23,7 +23,7 @@
 							<el-input v-model="workno" placeholder="请输入内容"></el-input>
 						</el-col>
 						<!--gutter属性来指定每一栏之间的间隔-->
-						<el-col :span="2">
+						<el-col :span="0.5">
 							<div class="grid-content bg-purple">
 								二级部门
 							</div>
@@ -31,7 +31,7 @@
 						<el-col :span="3">
 							<el-input v-model="twoleveldep" placeholder="请输入内容"></el-input>
 						</el-col>
-						<el-col :span="2">
+						<el-col :span="0.5">
 							<div class="grid-content bg-purple">
 								三级部门
 							</div>
@@ -44,9 +44,23 @@
 
 							</div>
 						</el-col>
+						<!-- <el-col :span="0.5">
+						  <div class="grid-content bg-purple">
+						    是否计件
+						  </div>
+						</el-col>
+						<el-col :span="3">
+						  <template>
+						    <el-select v-model="worktype" placeholder="请选择" >
+						      <el-option v-for="item in workTypeOptions" :key="item.value" :label="item.label" :value="item.value">
+						      </el-option>
+						    </el-select>
+						  </template>
+
+						</el-col> -->
 						<el-col :span="3">
 							<div class="grid-content bg-purple">
-								<el-button type="primary" @click="searchDataFnClick">查询</el-button>
+								<el-button type="primary" @click="searchDataFnClick" style="width: 100px;">查询</el-button>
 							</div>
 						</el-col>
 
@@ -56,29 +70,33 @@
 				</header>
 				<main class="el-main" style="padding-top: 0px;">
 					<template>
-						<el-table :data="dataList" stripe style="width: 100%;" height="618">
-							<el-table-column prop="serial" label="序号" width="50">
-							</el-table-column>
-							<el-table-column prop="name" label="姓名" width="100">
-							</el-table-column>
-							<el-table-column prop="workno" label="工号" width="100">
-							</el-table-column>
-							<el-table-column prop="sex" label="性别" width="100">
-							</el-table-column>
-							<el-table-column prop="firstleveldep" label="一级部门">
-							</el-table-column>
-							<el-table-column prop="twoleveldep" label="二级部门">
-							</el-table-column>
-							<el-table-column prop="threeleveldep" label="三级部门">
-							</el-table-column>
-							<el-table-column prop="positionname" label="职位">
-							</el-table-column>
-							<el-table-column align="center" label="操作" width="200" fixed="right">
-								<template slot-scope="scope">
-									<el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary"  icon="el-icon-edit">编辑</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
+						<div class="common-table">
+              <el-table :data="dataList"  header-row-class-name="table-header" border stripe style="width: 100%;" height="618">
+                <el-table-column prop="serial" label="序号" width="50">
+                </el-table-column>
+                <el-table-column prop="name" label="姓名" width="100">
+                </el-table-column>
+                <el-table-column prop="workno" label="工号" width="100">
+                </el-table-column>
+                <el-table-column prop="sex" label="性别" width="100">
+                </el-table-column>
+                <el-table-column prop="firstleveldep" label="一级部门">
+                </el-table-column>
+                <el-table-column prop="twoleveldep" label="二级部门">
+                </el-table-column>
+                <el-table-column prop="threeleveldep" label="三级部门">
+                </el-table-column>
+                <el-table-column prop="positionname" label="职位">
+                </el-table-column>
+                <el-table-column prop="worktype" label="是否计件">
+                </el-table-column>
+                <el-table-column align="center" label="操作" width="200" fixed="right">
+                  <template slot-scope="scope">
+                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary"  icon="el-icon-edit">编辑</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 					</template>
 					<el-dialog title="修改信息" :visible.sync="dialogFormVisible">
 						<el-form :model="form">
@@ -95,6 +113,12 @@
 								<el-select v-model="form.threeleveldep" @change="threeleveldepChange" placeholder="请选择三级部门">
 									<el-option v-for="item in centernameList" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="是否计件" :label-width="formLabelWidth">
+								<el-select v-model="worktype" placeholder="请选择" @change="isWorkChange">
+								  <el-option v-for="item in workTypeOptions" :key="item.value" :label="item.label" :value="item.value" >
+								  </el-option>
 								</el-select>
 							</el-form-item>
 						</el-form>
@@ -134,6 +158,8 @@
 				twoleveldep: '', //二级部门
 				threeleveldep: '', //三级部门
 				workno: '', //工号
+				worktype:'',//工种
+				workTypeOptions:[{value:'2',label:'管理人员'},{value:'1',label:'计件工人'}],
 				visible: false,
 				alltotal: 0,
 				pageSize: 10,
@@ -172,20 +198,25 @@
 				this.form.name = row.name;
 				this.form.workno = row.workno;
 				this.form.threeleveldep = row.threeleveldep;
+				this.worktype = row.worktype
 			},
 			confirmRevision(){//确定修改
-			    this.updateAllData();			
+			    this.updateAllData();
 				this.dialogFormVisible = false;
 				const that = this;
 		        setTimeout(function(){
 					that.searchDataFn(that.currentPage,that.pageSize);
-				})	 				    
+				})
 			},
 			searchDataFnClick() {
 				this.searchDataFn("1", '10')
 			},
+			isWorkChange(val) {
+				this.worktype = val
+
+			},
 			threeleveldepChange() {
-				
+
 			},
 			async searchDataFn(num, pnum = '10') {//列表
 				if (num === "1") {
@@ -198,7 +229,7 @@
 					workno: this.workno,
 					twoleveldep: this.twoleveldep,
 					threeleveldep: this.threeleveldep,
-					worktype: 1
+					worktype:''
 				}
 				let axiosUrl =  getCookieInfo().baseUrl + '/userMessage/getAttendanceAllData'
 				const res = await http.post(axiosUrl, option);
@@ -207,7 +238,7 @@
 					dataList.forEach((ele, index) => {
 						ele.worktype = ele.worktype == "1" ? "计件工人" : "管理人员"
 						ele.serial = (this.currentPage-1)*this.pageSize+(index+1);
-						
+
 					})
 					this.dataList = dataList
 					console.log(this.dataList);
@@ -234,6 +265,7 @@
 					name: this.form.name,
 					workno: this.form.workno,
 					threeleveldep: this.form.threeleveldep,
+					worktype:this.worktype
 				}
 				const axiosUrl = getCookieInfo().baseUrl + '/userMessage/updateAttendanceAllData';
 				const res = await http.post(axiosUrl, option);

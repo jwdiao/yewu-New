@@ -43,9 +43,13 @@
         <el-submenu index="4">
           <template slot="title"><i class="el-icon-news"></i>业务信息</template>
           <el-menu-item index="clocklist">人脸打卡记录</el-menu-item>
-          <el-menu-item index="dispatchList">迟到统计</el-menu-item>
-          <el-menu-item index="absent">旷工统计</el-menu-item>
-          <el-menu-item index="shiftList">调班统计</el-menu-item>
+          <!--<el-menu-item index="dispatchList">迟到统计</el-menu-item>-->
+          <!--<el-menu-item index="absent">旷工统计</el-menu-item>-->
+          <!--<el-menu-item index="shiftList">调班统计</el-menu-item>-->
+          <el-menu-item index="dispatchListNEW">迟到统计</el-menu-item>
+          <el-menu-item index="absentNEW">旷工统计</el-menu-item>
+          <el-menu-item index="shiftListNEW">调班统计</el-menu-item>
+          <!--<el-menu-item index="clocklistsync">人脸打卡记录同步</el-menu-item>  &lt;!&ndash;0416新增加&ndash;&gt;-->
         </el-submenu>
       </el-menu>
     </el-aside>
@@ -78,7 +82,7 @@
       }
     },
     created () {
-      
+
     },
     mounted () {
       this.username = getCookieInfo().username
@@ -143,17 +147,17 @@
     /deep/ .el-submenu__title{font-size:16px;padding-left:35px;color:#fff;}
     /deep/ li>.el-menu li{
       border:0;font-size:14px;border-left:3px solid transparent;
-      padding-left: 45px !important;background-color:rgba(255,255,255,.1) !important
+      padding-left: 45px !important;background-color:#192433 !important
     }
-    /deep/ li>.el-menu li:hover{background-color:rgba(255,255,255, .2) !important}
+    /deep/ li>.el-menu li:hover{background-color:#4473b8 !important}
     /deep/ .el-menu-item{border-left:3px solid transparent;}
     /deep/ .el-submenu [class^=el-icon-] {
       vertical-align: -1px;
     }
     .manage-menu_icon{width:16px;}
     /deep/ .el-menu-item i{color:#fff;}
-    /deep/ .el-menu-item.is-active{border-left:3px solid #409EFF;}
-    /deep/ .el-menu-item.is-active i{color:#409EFF;}
+    /deep/ .el-menu-item.is-active{border-left:3px solid #409EFF;background-color: #4473b8!important;color:#fff!important;}
+    /deep/ .el-menu-item.is-active i{color:#fff!important;}
     /deep/ .el-submenu__title i{color:#fff;}
   }
 </style>

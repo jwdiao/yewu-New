@@ -14,7 +14,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="班次">
-                        <el-select v-model="dayOrNight" placeholder="请选择">
+                        <el-select v-model="dayOrNight" placeholder="请选择" @change="changeWorkType">
                             <el-option
                               v-for="item in classes"
                               :key="item.value"
@@ -37,7 +37,7 @@
                     </el-select>
                   </el-form-item>
                     <el-form-item class="submitBtn">
-                        <el-button type="primary" @click="searchDataFn">进行查询</el-button>
+                        <el-button type="primary" @click="searchDataFn" style="width: 100px">查询</el-button>
                     </el-form-item>
                   <!--<a  ref="download" :href="dataUrl"></a>-->
                   <a class="paigong_download" href="javascript:void(0);" @click="download">
@@ -46,9 +46,10 @@
                 </el-form>
             </el-row>
             <el-row>
-            <template>
+            <template >
+              <div class="common-table">
                 <el-table
-                  :data="dataList"
+                  :data="dataList"  header-row-class-name="table-header" border
                   stripe
                   style="width: 100%" height="600">
                   <!--@row-click="getPersonInfo">-->
@@ -56,7 +57,7 @@
                     type="index"
                     label="序号"
                     width="50">
-                    </el-table-column>
+                  </el-table-column>
                   <el-table-column
                     prop="workname"
                     label="姓名"
@@ -84,6 +85,8 @@
                     label="最早派工时间">
                   </el-table-column>
                 </el-table>
+              </div>
+
             </template>
             <template>
                 <div class="block" style="padding: 20px; text-align: center;">
@@ -171,6 +174,7 @@
         },
         data() {
             return {
+              workType:1,
               personName:'',//员工姓名
               personNumber:'',//员工工号
               personDepartment:'',//员工归属中心
@@ -244,6 +248,13 @@
                     this.dayOrNight = this.currentDayOrNight;
                 }
             },
+          changeWorkType(){
+            if(this.dayOrNight === '白班'){
+              this.workType = 1
+            }else if(this.dayOrNight === '夜班'){
+              this.workType = 2
+            }
+          },
             setDefaultDate(){
                 const hour = (new Date()).getHours();
                 const month =  this.currentMon = new Date().getMonth() - 0 + 1 < 10 ? '0' + (new Date().getMonth() - 0 + 1) : new Date().getMonth() - 0 + 1,
@@ -280,15 +291,17 @@
             async getAllPersonList(){
                 let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/getLateList'
                 // let axiosUrl = 'http://10.88.190.36:8083/sanyUserPushRecord/getLateList'
-                // const result = await http.post(axiosUrl,{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
-                const result = await http.post(axiosUrl,{
-                  workType: this.dayOrNight,
-                  stopTime: this.searchDate,
-                  centerName:this.personDepartment,
-                  workname:this.personName,
-                  workno:this.personNumber,
-
-                  page: this.currentPage + '', pagesize: this.pageSize + ''})
+              //20190409修改
+              //   let axiosUrl ='http://10.19.7.70:8089/userRecordException/list';
+              // let axiosUrl = getCookieInfo().baseUrl + '/userRecordException/list'
+              //   const result = await http.post(axiosUrl,{workType: this.workType, queryDate: this.searchDate,recordStatus:1,workName:this.personName,workNo:this.personNumber,centerName:this.personDepartment, page: this.currentPage + '', pageSize: this.pageSize + ''})
+              const result = await http.post(axiosUrl,{
+                workType: this.dayOrNight,
+                stopTime: this.searchDate,
+                centerName:this.personDepartment,
+                workname:this.personName,
+                workno:this.personNumber,
+                page: this.currentPage + '', pagesize: this.pageSize + ''})
 
                 // const result = await http.post('sanyUserPushRecord/getLateList',{workType: this.dayOrNight, stopTime: this.searchDate, page: this.currentPage + '', pagesize: this.pageSize + ''})
                 if(result.data.ret == 200){
@@ -314,8 +327,11 @@
          async  download () {
            let url = getCookieInfo().baseUrl + '/sanyUserPushRecord/exportLateList'
            // let url = 'http://10.88.190.36:8083/sanyUserPushRecord/exportLateList'
-           // let url ='http://10.88.195.89:8083/sanyUserPushRecord/exportLateList';
            url = `${url}?workType=${this.dayOrNight}&stopTime=${this.searchDate}&centerName=${this.personDepartment}&workname=${this.personName}&workno=${this.personNumber}`;
+           //20190409修改
+           // let url ='http://10.19.7.70:8089/userRecordException/exportExceptionData';
+           // let url = getCookieInfo().baseUrl + '/userRecordException/exportExceptionData'
+           // url = `${url}?workType=${this.workType}&queryDate=${this.searchDate}&recordStatus=1&workName=${this.personName}&workNo=${this.personNumber}&centerName=${this.personDepartment}`;
            url = (encodeURI(url));
            // window.open(url,'_blank');
            location.href = url

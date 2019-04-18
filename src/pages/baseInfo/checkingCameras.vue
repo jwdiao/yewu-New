@@ -16,21 +16,23 @@
     </section>
     <!--主表-->
     <template>
-      <el-table
-        :data="dataList" @selection-change="handleSelectionChange"
-        stripe
-        style="width: 100%; margin-top: -10px;" height="650">
-        <el-table-column type="selection" label="选择" width="80"></el-table-column>
-        <el-table-column type="index" label="序号" width="100">   </el-table-column>
-        <el-table-column prop="attendancesite"  label="考勤地点">    </el-table-column>
-        <el-table-column prop="attancetype" label="摄像头种类">  </el-table-column>
-        <el-table-column prop="stateno" label="分组编号">  </el-table-column>
-        <el-table-column  label="操作">
-          <template slot-scope="scope">
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary"  icon="el-icon-edit">编辑</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="common-table">
+        <el-table  header-row-class-name="table-header" border
+                   :data="dataList" @selection-change="handleSelectionChange"
+                   stripe
+                   style="width: 100%; margin-top: -10px;" height="650">
+          <el-table-column type="selection" label="选择" width="80"></el-table-column>
+          <el-table-column type="index" label="序号" width="100">   </el-table-column>
+          <el-table-column prop="attendancesite"  label="考勤地点">    </el-table-column>
+          <el-table-column prop="attancetype" label="摄像头种类">  </el-table-column>
+          <el-table-column prop="stateno" label="分组编号">  </el-table-column>
+          <el-table-column  label="操作">
+            <template slot-scope="scope">
+              <el-button size="small" @click="handleEdit(scope.$index, scope.row)" type="primary"  icon="el-icon-edit">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </template>
     <!--新增-->
     <el-dialog title="考勤摄像头信息" :visible.sync="addDialogFormVisible">
