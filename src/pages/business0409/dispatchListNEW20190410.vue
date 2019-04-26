@@ -37,7 +37,7 @@
                     </el-select>
                   </el-form-item>
                     <el-form-item class="submitBtn">
-                        <el-button type="primary" @click="searchDataFn">进行查询</el-button>
+                        <el-button type="primary" style="width: 100px" @click="searchDataFn">查询</el-button>
                     </el-form-item>
                   <!--<a  ref="download" :href="dataUrl"></a>-->
                   <a class="paigong_download" href="javascript:void(0);" @click="download">
@@ -53,37 +53,13 @@
                             stripe
                             style="width: 100%" height="600">
                     <!--@row-click="getPersonInfo">-->
-                    <el-table-column
-                      type="index"
-                      label="序号"
-                      width="50">
-                    </el-table-column>
-                    <el-table-column
-                      prop="workName"
-                      label="姓名"
-                      width="140">
-                    </el-table-column>
-                    <el-table-column
-                      prop="workNo"
-                      label="工号"
-                      width="160">
-                    </el-table-column>
-                    <el-table-column
-                      prop="centerName"
-                      label="归属中心">
-                    </el-table-column>
-                    <el-table-column
-                      prop="pushTime"
-                      label="首次进门时间">
-                    </el-table-column>
-                    <el-table-column
-                      prop="snapshotPlace"
-                      label="打卡地址">
-                    </el-table-column>
-                    <el-table-column
-                      prop="startWorkplanTime"
-                      label="最早派工时间">
-                    </el-table-column>
+                    <el-table-column type="index" label="序号" width="50"></el-table-column>
+                    <el-table-column prop="workName" label="姓名" width="140"></el-table-column>
+                    <el-table-column prop="workNo" label="工号" width="160"></el-table-column>
+                    <el-table-column prop="centerName" label="归属中心"></el-table-column>
+                    <el-table-column prop="pushTime" label="首次进门时间"></el-table-column>
+                    <el-table-column prop="snapshotPlace" label="打卡地址"></el-table-column>
+                    <el-table-column prop="startWorkplanTime" label="最早派工时间"></el-table-column>
                   </el-table>
                 </div>
             </template>
@@ -115,43 +91,19 @@
                     <template>
                     <el-table :data="tableData3" style="width: 63.5%; display: inline-block;" :header-row-style="tableHeaderFn">
                         <el-table-column>
-                            <el-table-column
-                              prop="jobNum"
-                              label="工号"
-                              width="100">
-                            </el-table-column>
-                            <el-table-column
-                              prop="name"
-                              label="姓名"
-                              width="80">
-                            </el-table-column>
+                            <el-table-column  prop="jobNum" label="工号" width="100"> </el-table-column>
+                            <el-table-column  prop="name" label="姓名" width="80"></el-table-column>
                         </el-table-column>
                         <el-table-column label="打卡详情信息">
-                            <el-table-column
-                              prop="punchTime"
-                              label="打卡时间">
-                            </el-table-column>
-                            <el-table-column
-                              prop="punchType"
-                              label="打卡类型"
-                              width="80">
-                            </el-table-column>
-                            <el-table-column
-                              prop="punchAddress"
-                              label="打卡位置">
-                            </el-table-column>
+                            <el-table-column prop="punchTime" label="打卡时间"></el-table-column>
+                            <el-table-column prop="punchType" label="打卡类型" width="80"></el-table-column>
+                            <el-table-column prop="punchAddress" label="打卡位置"></el-table-column>
                         </el-table-column>
                     </el-table>
                     <el-table :data="tableData3" style="width: calc(36% - 10px); margin-left: 10px; display: inline-block;" :header-row-style="tableHeaderFn">
                         <el-table-column label="派工详情信息">
-                            <el-table-column
-                              prop="DispatchingStart"
-                              label="派工开始时间">
-                            </el-table-column>
-                            <el-table-column
-                              prop="DispatchingEnd"
-                              label="派工结束时间">
-                            </el-table-column>
+                            <el-table-column prop="DispatchingStart" label="派工开始时间"> </el-table-column>
+                            <el-table-column prop="DispatchingEnd" label="派工结束时间"></el-table-column>
                         </el-table-column>
                     </el-table>
                   </template>

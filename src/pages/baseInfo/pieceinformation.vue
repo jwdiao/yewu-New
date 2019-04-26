@@ -3,7 +3,7 @@
         <!-- <div class="header_container">计件人员信息</div> -->
         <div class="source">
             <section class="el-container is-vertical">
-                <header class="el-header" style="height: 115px;">
+                <header  style="height: 115px;">
                     <el-row :gutter="10" style="margin-bottom:2px;">
 						                   <!--gutter属性来指定每一栏之间的间隔-->
                         <el-col :span="0.5">
@@ -63,7 +63,7 @@
 											<!--gutter属性来指定每一栏之间的间隔-->
 
                       <el-col :span="2" >
-                        <div class="grid-content bg-purple" style="margin-left: 10px">
+                        <div class="grid-content bg-purple" style="">
                           <a class="paigong_download" href="javascript:void(0);" @click="downloadFile">
                             <i class="el-icon-download" ></i>下载模板
                           </a>
@@ -95,14 +95,14 @@
                       </el-col>
                       <el-col :span="1" style="margin-top: 2px">
                         <div class="grid-content bg-purple">
-                          <el-button type="danger" @click="deleteAllDataClick" style="background: #ff404a;color: #fff;width: 120px;margin: 0 72px;">删除全部数据</el-button>
+                          <el-button type="danger" disabled @click="deleteAllDataClick" style="color: #fff;width: 120px;margin: 0 72px;">删除全部数据</el-button><!--background: #ff404a;-->
                         </div>
                       </el-col>
 
 
 										</el-row>
                 </header>
-                <main class="el-main" style="padding-top: 10px;">
+                <main  style="padding-top: 10px;">
                     <template>
                         <div class="common-table">
                           <el-table  header-row-class-name="table-header" border
@@ -711,6 +711,9 @@
     }
   }
   /deep/ .el-form-item__content {
-    margin-left: 0px;
+    margin-left: 0px!important;
+  }
+  .addPieceInformationDialog  /deep/ .el-form-item{
+    margin-left: 0px!important;
   }
 </style>

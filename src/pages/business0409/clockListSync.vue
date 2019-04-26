@@ -1,9 +1,7 @@
 <template>
-	<div class=""  style="height:93%;overflow-y: hidden;">
-		<section class="data_section" style="height:calc(100% + 24px); ;">
-      <div class="index_main" style="height: 100%;overflow: hidden">
+	  
+      <div class="index_main" style="">
         <div class="index_left">
-
           <div class="index_left_bottom">
             <p class="home_title">人员信息列表</p>
             <div class="search">
@@ -12,51 +10,55 @@
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">开始时间：</span>
-                  <el-date-picker v-model="startDate" type="datetime" :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                  <el-date-picker v-model="startTime" type="datetime" :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
                   </el-date-picker>
                 </div>
                 </template>
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">结束时间：</span>
-                  <el-date-picker  v-model="endDate"  type="datetime" :picker-options="pickerOptionsEnd" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                  <el-date-picker  v-model="endTime"  type="datetime" :picker-options="pickerOptionsEnd" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
                   </el-date-picker>
                 </div>
                 </template>
               </div>
-              <el-button style="width: 80px; height: 36px;" class="gosearching" type="primary" @click="searchProInfo" size="small">搜索</el-button>
-              <el-button style="width: 80px;height: 36px;" class="clear" type="primary" @click="syncProInfo" size="small"  >同步</el-button>
+              <el-button style="width: 80px; height: 36px;" class="gosearching" type="primary" @click="searchProInfo" size="small" >搜索</el-button>
+              <el-button style="width: 80px;height: 36px;" class="clear" type="primary" @click="syncProInfo" size="small" :disabled = this.asyncFlag >同步</el-button>
               <!--<div class="gosearching" @click="searchProInfo">搜索</div>
               <div class="clear" @click="clearProInfo">清空</div>-->
             </div>
 
             <div class="common-table">
-              <el-table   stripe :data="historyData" header-row-class-name="table-header" border  style="width: 100%;"  height="600"
-                          v-loading="loadingsync" element-loading-text="正在同步中……"  element-loading-spinner="el-icon-loading"
-                          element-loading-background="rgba(0, 0, 0, 0.6)"
-                          @row-click="addImg">
-                <el-table-column  type="index" label="序号" width="50"> </el-table-column>
-                <el-table-column prop="workname" label="工号/姓名"></el-table-column>
-                <el-table-column prop="pushtime" label="打卡时间"></el-table-column>
-                <el-table-column prop="snapshotplace" label="摄像头名称"></el-table-column>
-                <el-table-column prop="department" label="工作中心"></el-table-column>
-              </el-table>
+							<div class="">
+								<el-table   stripe :data="historyData" header-row-class-name="table-header" border  style="width: 100%;"  :height="tableHeight"
+								            v-loading="loadingsync" element-loading-text="正在同步中……"  element-loading-spinner="el-icon-loading"
+								            element-loading-background="rgba(0, 0, 0, 0.6)"
+								            @row-click="addImg">
+								  <el-table-column prop="num" label="序号" width="50"> </el-table-column>
+								  <el-table-column prop="workname" label="工号/姓名"></el-table-column>
+								  <el-table-column prop="pushtime" label="打卡时间"></el-table-column>
+								  <el-table-column prop="snapshotplace" label="摄像头名称"></el-table-column>
+								  <el-table-column prop="department" label="工作中心"></el-table-column>
+								</el-table>
+							</div>
+							<div style="height:32px;">
+								<el-pagination style="margin-top: 5px; text-align: center;" background :page-sizes="[20,50,100]"
+								  :page-size="pagination.pageSize"  :current-page="pagination.page" :pager-count="7" :total="pagination.dataCount" layout="total,sizes, prev, pager, next, jumper"
+								  @current-change="currentChange" @prev-click="prevClick" @next-click="nextClick" @size-change="handleSizeChange" ><!--@size-change="handleSizeChange"-->
+								</el-pagination>
+							</div>
             </div>
-            <el-pagination style="margin-top: 20px; text-align: center" background :page-sizes="[20,50,100]"
-              :page-size="pagination.pageSize"  :current-page="pagination.page" :pager-count="7" :total="pagination.dataCount" layout="total,sizes, prev, pager, next, jumper"
-              @current-change="currentChange" @prev-click="prevClick" @next-click="nextClick" @size-change="handleSizeChange" ><!--@size-change="handleSizeChange"-->
-            </el-pagination>
+           
           </div>
         </div>
         <div class="index_right">
           <div class="index_right_item">
             <p class="home_title">图像显示区</p>
-            <div class="home_title_imgpic"><img :src="eventsnapimg" alt=""></div>
+            <div class="home_title_imgpic" style="height:100%"><img :src="eventsnapimg" alt="" style="height:100%"></div>
           </div>
         </div>
       </div>
-		</section>
-  </div>
+	
 </template>
 
 <script>
@@ -82,16 +84,19 @@ export default {
           return time.getTime() < new Date(this.startDate).getTime() || time.getTime() > Date.now();
         }
       },
-      startDate: '',  //开始时间
-      endDate: '',  //结束时间
+      startTime: '',  //开始时间
+      endTime: '',  //结束时间
       eventsnapimg:'', //图像
       historyData:[],  //页面显示列表数组
+			asycnlist:[],//同步功能所要传的接口
+			asyncFlag:true,//同步按钮是否禁用
+		  tableHeight:'',//
       workno:'', // 工号
       workname:'', // 姓名
       // 分页
       pagination: {
         dataCount: 0, // 初始化信息条数
-        pageSize:19, // 每页显示条数
+        pageSize:20, // 每页显示条数
         page: 1, // 当前页码
       }
     }
@@ -101,9 +106,8 @@ export default {
     window.addEventListener('resize', this.handleResize)
     /*初始化显示发请求
     * */
-    let {workno,workname} = this
-    let {page, pageSize} = this.pagination
-    this.getEventInfoList(workno,workname,page,pageSize)
+	this.handleResize();
+		
   },
   methods: {
     /*函数名：resize
@@ -111,6 +115,10 @@ export default {
       描述：根据浏览器大小内容自适应
     * */
     handleResize(){
+			var height = document.documentElement.clientHeight
+			this.tableHeight = height - 355			
+			//console.log(333)
+			/* console.log(height) 386*/
       /*var screenHeight = $(window).width()
       console.log(screenHeight)
       if(screenHeight>1000){
@@ -122,51 +130,85 @@ export default {
       }*/
     },
     /*函数名：getEventInfoList
-      参数：workno:工号, workname：姓名, start：第几页, end：每页显示几条, startTime：开始时间, endTime：结束时间
+      参数： startTime：开始时间, endTime：结束时间
       描述：异步ajax请求与后台通信
     * */
-    async getEventInfoList (workno, workname, start, end, startTime, endTime) {
-      if (!startTime) startTime = ''
-      if (!endTime) endTime = ''
-      let axiosUrl = getCookieInfo().baseUrl + '/userPushRecord/find/all';
-      console.log('人脸打卡记录页面：',axiosUrl)
-      // debugger;
-      const res = await http.post(axiosUrl,{'workno':workno,'workname':workname,'start':start,'end':end,'startTime':this.startDate,'endTime':this.endDate})
-      // const res = await http.post('/userPushRecord/find/all',{'workno':workno,'workname':workname,'start':start,'end':end,'startTime':this.startDate,'endTime':this.endDate})
-      if (res.data.ret === "200") {
-        this.historyData = res.data.data.list // 当前页的数据
-        console.log('historyData:',this.historyData)
-        this.pagination.dataCount = res.data.data.totalCount // 总数
-        this.eventsnapimg = this.historyData[0].snappicurl //点击切换图片
-        //当工作中心为物业时，显示为未维护20190403
-        this.historyData.forEach(item=>{
-          if(item.department === '物业'){
-            item.department = '未维护'
-          }
-        })
-      }
-    },
+    async getEventInfoList() {
+			const res = await http.post('http://10.88.190.36:8083/userPushRecord/getPush',{
+				startTime:this.startTime,
+				endTime:this.endTime,
+				page:this.pagination.page,
+				pagesize:this.pagination.pageSize
+			})
+			if(res && res.data.ret==200){
+				this.asyncFlag = false
+				//映射出表格渲染数组
+				this.historyData = res.data.getPush.map((item,index)=>{
+					    return {
+							num : (this.pagination.page-1)*this.pagination.pageSize + index,
+							workname: item.workname,
+							pushtime:item.pushtime,
+							snapshotplace:item.snapshotplace,
+							department:item.department,
+							facesnapurl:item.facesnapurl
+						}
+				})
+				//如果没有数据时图片路径值应为空
+				this.eventsnapimg = this.historyData.length>0 ? this.historyData[0].facesnapurl:''
+				this.pagination.dataCount = res.data.total
+				//映射出同步提交参数数组
+				this.asycnlist = res.data.list.map((e,i)=>{
+					    return {
+								 attancetype : e.attancetype,
+								 facesnapurl : e.facesnapurl,
+								 pushtime : e.pushtime,
+								 snappicurl : e.snappicurl,
+								 snapshotplace : e.snapshotplace,
+								 username : e.username,
+								 workname : e.workname,
+								 workno : e.workno,
+					    }
+				})
+			}
+		},
+		/*函数名：getEventInfoList
+		  参数： startTime：开始时间, endTime：结束时间
+		  描述：异步ajax请求与后台通信
+		* */
+		async insertPerson(){
+			const res = await http.post('http://10.88.190.36:8083/userPushRecord/insertPerson',{
+				list:this.asycnlist
+			})
+			if(res){
+				this.loadingsync = false
+				this.$message({
+				  message: '同步完成',
+				  type: 'success',
+				  
+				});
+			}
+		} ,
     /*函数名：handleDateChange
      参数：val：val[0]:起始时间；val[1]:结束时间
      描述：通过日期检索信息
    * */
-    handleDateChange(val){
+   /* handleDateChange(val){
      console.log(val[0],val[1])
       var startTime = val[0]
       var endTime = val[1]
       let {workno,workname} = this
       let {page, pageSize} = this.pagination
       page = 1
-      this.getEventInfoList(workno, workname, page, pageSize,startTime,endTime)
-    },
+      
+    }, */
     /*函数名：searchProInfo
      参数：无
      描述：点击按钮检索信息
    * */
     searchProInfo(){
-      if(this.startDate && this.endDate){
-        this.pagination.page = 1
-        this.handleDataSearch()
+      if(this.startTime && this.endTime){	 
+		console.log(this.asycnlist)
+        this. getEventInfoList()
         if(this.historyData.length>0){
           this.downShow = true;
         }else{
@@ -178,7 +220,6 @@ export default {
           message:'必须填写开始时间和结束时间'
         })
       }
-
     },
 
     /*函数名：handleDataSearch
@@ -193,7 +234,7 @@ export default {
       // page = page.toString()
       // dataCount = 0
       // page = 1
-      this.getEventInfoList(workno, workname, page, pageSize)
+      this.getEventInfoList()
     },
     /*@name：刁俊文
      @date：2019.04.16
@@ -202,18 +243,12 @@ export default {
     syncProInfo(){
       this.loadingsync = true //正在同步中
       //调用同步接口,返回的数据进行分页
-
-
+      this.insertPerson()
+      
       //同步成功后，用户点击确认按钮
-      setTimeout(()=>{
-        this.loadingsync = false
-        this.$message({
-          showClose: true,
-          message: '同步完成',
-          type: 'success',
-          duration:0,
-        });
-      },3000)
+      /* setTimeout(()=>{
+        
+      },3000) */
 
     },
     /*函数名：addImg
@@ -221,33 +256,31 @@ export default {
      描述：点击当前条目，显示对应图片
    * */
     addImg(row,event,column){
-      this.eventsnapimg =  row.snappicurl
+      this.eventsnapimg =  row.facesnapurl
     },
     /*函数名：currentChange
      参数：index：当前项
      描述：点击当前项，显示对应列表
    * */
     currentChange(index){  //当前页码
-      console.log("currentPage:", index)
-      this.pagination.page = index
-      this.handleDataSearch()
+	  this.pagination.page = index ;
+      this.getEventInfoList();
     },
     /*函数名：prevClick，nextClick
     参数：index：当前项
     描述：点击上一项、下一项，显示对应列表
   * */
     prevClick(index){   //上翻页
-      this.pagination.page = index
-      this.handleDataSearch()
+     this.pagination.page = index ;
+     this.getEventInfoList();
     },
     nextClick(index){   //下翻页
-      this.pagination.page = index
-      this.handleDataSearch()
+     this.pagination.page = index ;
+     this.getEventInfoList(); 
     },
     handleSizeChange(val){
-      this.pagination.page = 1
-      this.pagination.pageSize = val
-      this.handleDataSearch()
+     this.pagination.pageSize = val ;
+     this.getEventInfoList();
     },
   }
 }
@@ -256,6 +289,13 @@ export default {
 
 <style lang="less" scoped>
 	@import '../../assets/css/mixin';
+	.index_main{
+		height:calc(100% - 60px);
+		overflow: hidden;
+	}
+	.common-table{
+		height:calc(100% - 145px)
+	}
 	.header_container{
 		background-color: #EFF2F7;
 		height: 60px;
@@ -280,7 +320,6 @@ export default {
       margin-top: 15px;
       padding-top: 0px;
       padding-left: 0px;
-      padding-bottom: 15px;
       /deep/ .el-table__row:hover{
         cursor: pointer;
       }
@@ -419,7 +458,7 @@ export default {
     }
   }
   .index_right{
-    width: 40%;float: left;height: calc(100% - 18px); overflow: hidden;
+    width: 42%;float: left;height: calc(100% - 15px); overflow: hidden;
     display: flex;flex-direction: column;
     border: 2px solid #EFF2F7;
     margin-top: 15px;

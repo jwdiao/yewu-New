@@ -1,6 +1,6 @@
 import http from '../http'
 import {getCookieInfo} from '../getCookie'
-// debugger;
+//debugger
 const baseUrlFromCookie = getCookieInfo().baseUrl
 
 
@@ -67,6 +67,20 @@ export const getLateList = (centerName,workType, stopTime, page, pagesize) => ht
 export const getChangeWorkList = (centerName,workType, stopTime, page, pagesize) => http.post(baseUrlFromCookie + '/sanyUserPushRecord/getChangeWorkList',{
   centerName: centerName,workType: workType, stopTime: stopTime, page: page, pagesize: pagesize
 })
+// 中间==人员考勤列表==加工中心为子工作中心时旷工列表(考勤和考勤历史页面公用)0417-->
+export const getAbsentList0417 = (workType,queryDate, recordStatus, workName, workNo,centerName,page,pageSize) => http.post(baseUrlFromCookie+'/userRecordException/list',{
+  workType,queryDate, recordStatus, workName, workNo,centerName,page,pageSize
+})
+// 中间==人员考勤列表==加工中心为子工作中心时迟到列表(考勤和考勤历史页面公用)0417-->
+export const getLateList0417 = (workType,queryDate,recordStatus,workName,workNo,centerName,page,pageSize) => http.post(baseUrlFromCookie+'/userRecordException/list',{
+  workType,queryDate,recordStatus,workName,workNo,centerName,page,pageSize
+})
+// 中间==人员考勤列表==加工中心为子工作中心时未派工列表(考勤和考勤历史页面公用)0417-->
+export const getChangeWorkList0417 = (workType,queryDate,recordStatus,workName,workNo,centerName,page,pageSize) => http.post(baseUrlFromCookie+'/userRecordException/list',{
+  workType,queryDate,recordStatus,workName,workNo,centerName,page,pageSize
+})
+
+
 // 中间==人员考勤列表==加工中心为子工作中心时离岗列表(考勤和考勤历史页面公用)
 export const getOutList = (params) => params.queryDay ? http.post(baseUrlFromCookie + '/sanyUserPushRecord/getOutList',{
   centerName: params.centerName,

@@ -3,7 +3,7 @@
 		<!-- <div class="header_container">计件人员信息</div> -->
 		<div class="source">
 			<section class="el-container is-vertical">
-				<header class="el-header" style="height: 60px;">
+				<header  style="height: 60px;">
 					<el-row :gutter="10" style="margin-bottom:2px;">
 						<!--gutter属性来指定每一栏之间的间隔-->
 						<el-col :span="0.5">
@@ -42,7 +42,7 @@
 					</el-row>
 
 				</header>
-				<main class="el-main" style="padding-top: 0px;">
+				<main  style="padding-top: 0px;">
 					<template>
 						<div class="common-table">
               <el-table  header-row-class-name="table-header" border :data="dataList" stripe style="width: 100%;" height="625">

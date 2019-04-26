@@ -433,7 +433,7 @@ export default {
     描述：删除对应的每一行
   * */
     deletePaigongRow(index, rows) {
-      this.$confirm('此操作将永久删除《'+rows.workusernum+'》当天的所有记录, 是否继续?', '提示', {
+      this.$confirm('删除（'+rows.workusernum+'）的记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

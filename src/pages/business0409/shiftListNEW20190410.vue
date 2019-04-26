@@ -38,7 +38,7 @@
                     </el-select>
                   </el-form-item>
                     <el-form-item class="submitBtn">
-                        <el-button type="primary" @click="searchDataFn">进行查询</el-button>
+                        <el-button type="primary" style="width: 100px" @click="searchDataFn">查询</el-button>
                     </el-form-item>
                   <a class="paigong_download" href="javascript:void(0);" @click="download">
                     <i class="el-icon-download" ></i>导出文件
@@ -53,33 +53,12 @@
                    stripe
                    style="width: 100%" height="600">
                    <!--@row-click="getPersonInfo">-->
-                   <el-table-column
-                     type="index"
-                     label="序号"
-                     width="50">
-                   </el-table-column>
-                   <el-table-column
-                     prop="workName"
-                     label="姓名"
-                     width="200">
-                   </el-table-column>
-                   <el-table-column
-                     prop="workNo"
-                     label="工号"
-                     width="200">
-                   </el-table-column>
-                   <el-table-column
-                     prop="centerName"
-                     label="归属中心">
-                   </el-table-column>
-                   <el-table-column
-                     prop="pushTime"
-                     label="首次打卡时间">
-                   </el-table-column>
-                   <el-table-column
-                     prop="snapshotPlace"
-                     label="打卡地址">
-                   </el-table-column>
+                   <el-table-column type="index" label="序号" width="50"></el-table-column>
+                   <el-table-column prop="workName" label="姓名" width="200"></el-table-column>
+                   <el-table-column prop="workNo" label="工号" width="200"></el-table-column>
+                   <el-table-column prop="centerName" label="归属中心"></el-table-column>
+                   <el-table-column prop="pushTime" label="首次打卡时间"></el-table-column>
+                   <el-table-column prop="snapshotPlace" label="打卡地址"> </el-table-column>
                  </el-table>
                </div>
             </template>
@@ -110,26 +89,11 @@
                     <template>
                         <el-table :data="tableData3" style="width: 100%;" :header-row-style="tableHeaderFn">
                             <el-table-column label="打卡详情信息">
-                                <el-table-column
-                                  prop="jobNum"
-                                  label="工号">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="name"
-                                  label="姓名">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchTime"
-                                  label="打卡时间">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchType"
-                                  label="打卡类型">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="punchAddress"
-                                  label="打卡位置">
-                                </el-table-column>
+                                <el-table-column prop="jobNum" label="工号"> </el-table-column>
+                                <el-table-column prop="name" label="姓名"></el-table-column>
+                                <el-table-column prop="punchTime"  label="打卡时间"></el-table-column>
+                                <el-table-column prop="punchType" label="打卡类型"></el-table-column>
+                                <el-table-column  prop="punchAddress" label="打卡位置"> </el-table-column>
                             </el-table-column>
                         </el-table>
                     </template>

@@ -15,8 +15,7 @@
           </el-form-item>
           <el-form-item label="班次">
             <el-select class="settingWidth" v-model="dayOrNight" placeholder="请选择" @change="changeWorkType">
-              <el-option
-                v-for="item in classes"
+              <el-option v-for="item in classes"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -31,13 +30,15 @@
           </el-form-item>
           <el-form-item label="归属中心">
             <el-select class="settingWidth" v-model="personDepartment" placeholder="请选择" clearable @clear="clearMachingCenter" @change="selectMachingCenter">
-              <el-option v-for="item in departmentDataArr" :key="item.value" :label="item.label" :value="item.value">
-
+              <el-option v-for="item in departmentDataArr"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item class="submitBtn">
-            <el-button type="primary" @click="onSubmit">进行查询</el-button>
+            <el-button type="primary" style="width: 100px" @click="onSubmit">查询</el-button>
           </el-form-item>
           <a class="paigong_download" href="javascript:void(0);" @click="download">
             <i class="el-icon-download" ></i>导出文件
@@ -51,31 +52,12 @@
                       :data="tableData"
                       stripe
                       style="width: 100%" height="600">
-              <el-table-column
-                type="index"
-                label="序号"
-                width="50">
-              </el-table-column>
-              <el-table-column
-                prop="workName"
-                label="姓名">
-              </el-table-column><!--username workName-->
-              <el-table-column
-                prop="workNo"
-                label="工号">
-              </el-table-column><!--num workNo-->
-              <el-table-column
-                prop="centerName"
-                label="归属中心">
-              </el-table-column>
-              <el-table-column
-                prop="startWorkplanTime"
-                label="旷工日期">  <!--planDate-->
-              </el-table-column>
-              <!--<el-table-column
-                prop="remark"
-                label="备注">
-              </el-table-column>-->
+              <el-table-column type="index" label="序号" width="50"></el-table-column>
+              <el-table-column prop="workName" label="姓名"></el-table-column><!--username workName-->
+              <el-table-column prop="workNo" label="工号"></el-table-column><!--num workNo-->
+              <el-table-column prop="centerName" label="归属中心"> </el-table-column>
+              <el-table-column prop="startWorkplanTime" label="旷工日期"></el-table-column> <!--planDate-->
+              <!--<el-table-column prop="remark"  label="备注"></el-table-column>-->
             </el-table>
           </div>
         </template>

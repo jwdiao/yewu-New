@@ -57,6 +57,7 @@ const FaceAndAttendance = r => require.ensure([], () => r(require('@/baobiaoPage
 const HomeCheckingV1 = r => require.ensure([], () => r(require('@/baobiaoPages/checking/index.vue')), 'HomeCheckingV1')
 const HomeCheckingV2 = r => require.ensure([], () => r(require('@/baobiaoPages/checking20190218/index.vue')), 'HomeCheckingV2')
 const HomeCheckingV3 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190221/Checking-v20190221.vue')), 'HomeCheckingV3')
+const HomeCheckingV4 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190419/Checking-v20190419.vue')), 'HomeCheckingV4')
 // 打卡
 const Vision = r => require.ensure([], () => r(require('@/baobiaoPages/vision.vue')), 'Vision')
 
@@ -91,6 +92,11 @@ const router = new Router({
       name: 'HomeCheckingV2',
       component: HomeCheckingV2
     },
+     {
+      path: '/homecheckingV3',
+      name: 'HomeCheckingV3',
+      component: HomeCheckingV3
+    },
     /* {
       path: '/homecheckingV3',
       name: 'HomeCheckingV3',
@@ -98,8 +104,8 @@ const router = new Router({
     }, */
     {
       path: '/homechecking',
-      name: 'HomeCheckingV3',
-      component: HomeCheckingV3
+      name: 'HomeCheckingV4',
+      component: HomeCheckingV4
     },
     {
       path: '/vision',
