@@ -2,18 +2,33 @@
   <div class="index">
     <!-- 头部 start -->
     <div class="index_top">
-      <!-- <div class="title"><span @click="showSelectDialog"  v-text="titleText"></span></div> -->
-      <div class="title"><span @click="showSelectDialog">三现数据中心</span></div>
+      <div class="title"><span  @click="showSelectDialog"  v-text="titleText"></span></div>
       <div class="leftInfo">
-        <div class="back" @click="enterIndexPage('/faceAndAttendance')"><img src="../../assets/images/index_back.png"></div>
-        <div class="dayOrnight">
-          <img v-show="dayOrNightStatus ==='白班'" src="../../assets/images/index_sun.png" />
-          <img v-show="dayOrNightStatus ==='夜班'" src="../../assets/images/index_moon.png" />
-          <span v-text="dayOrNightStatus">白班</span>
+        <div class="back" @click="enterIndexPage('/HomeGuide')"><img src="../../assets/images/index_back.png"></div>
+        <div class="historyTime">
+          <el-date-picker
+            v-model="historyDateValue"
+            type="date"
+            value-format="yyyy-MM-dd"
+            @change="handleHistoryTimeFun"
+            placeholder="选择日期">
+          </el-date-picker>
         </div>
-        <!-- <div class="historyBtn" @click="enterCheckHistory">历史记录</div> -->
+        <ul class="dayNightBox">
+          <li :class="{'selected':selectedDayOrNight==='DAY'}" @click="handleSelectedDayOrNight('DAY')">
+            <img v-show="selectedDayOrNight==='DAY'" src="../../assets/images/checking_sun-yellow.png" />
+            <img v-show="selectedDayOrNight==='NIGHT'" src="../../assets/images/checking_sun-grey.png" />
+            <span>白班</span>
+          </li>
+          <li :class="{'selected':selectedDayOrNight==='NIGHT'}" @click="handleSelectedDayOrNight('NIGHT')">
+            <img v-show="selectedDayOrNight==='NIGHT'" src="../../assets/images/checking_moon-yellow.png" />
+            <img v-show="selectedDayOrNight==='DAY'" src="../../assets/images/checking_moon-grey.png" />
+            <span>夜班</span>
+          </li>
+        </ul>
+        <div class="historyBtn" @click="enterChecking">返回实时</div>
       </div>
-      <em class="time" v-text="currentTime"></em>
+      <!-- <em class="time" v-text="currentTime"></em> -->
     </div>
     <!-- 头部 end -->
     <!-- 头部下拉 start -->
@@ -65,15 +80,15 @@
         <AbnormalStatistics :info="baseInfo" :monthData="monthDataLeft" :yearData="yearDataLeft" />
       </div>
       <div class="index_con">
-        <Checking :info="baseInfo" :isDayOrNigint="dayOrNightStatus" :kaoqinList="kaoqinList" :kaoqinListSubCenter="kaoqinListSubCenter"/>
+        <Checking :info="baseInfo" :isDayOrNigint="dayOrNightStatus" :kaoqinList="kaoqinList" :kaoqinListSubCenter="kaoqinListSubCenter" />
       </div>
       <div class="index_right">
         <attendance
         v-show="this.$store.state.selectedTabCheckingBetween!='energy'"
         :dayInfo="dayEchartsDataRight" :monthInfo="monthEchartsDataRight" :yearInfo="yearEchartsDataRight" />
-        <EnergyStatistics
+        <!-- <EnergyStatistics
         v-if="this.$store.state.selectedTabCheckingBetween=='energy'"
-        :dayInfo="dayEchartsDataRight" :monthInfo="monthEchartsDataRight" :yearInfo="yearEchartsDataRight" />
+        :dayInfo="dayEchartsDataRight" :monthInfo="monthEchartsDataRight" :yearInfo="yearEchartsDataRight" /> -->
       </div>
     </div>
     <!-- main end -->
@@ -87,39 +102,39 @@
 <script>
 import moment from 'moment'
 import axios from 'axios'
-import AbnormalStatistics from '@/baobiaoPages/checking-v20190419/AbnormalStatistics'
-import Attendance from '@/baobiaoPages/checking-v20190419/Attendance'
-import EnergyStatistics from '@/baobiaoPages/checking-v20190419/EnergyStatistics'
-import Checking from '@/baobiaoPages/checking-v20190419/Checking'
-import MachingCenter from '@/baobiaoPages/checking-v20190419/MachingCenter'
+import AbnormalStatistics from '@/components/checking-v20190221/AbnormalStatisticsHistory'
+import Attendance from '@/components/checking-v20190221/AttendanceHistory'
+import EnergyStatistics from '@/components/checking-v20190221/EnergyStatisticsHistory'
+import Checking from '@/components/checking-v20190221/CheckingHistory'
+import MachingCenter from '@/components/checking-v20190221/MachingCenterHistory'
 
 import {
   getAttendanceData,
-  getLateEchartsOfYear,
-  getWorkEchartsOfDay,
+  getWorkEchartsOfHistoryDay,
   getWorkEchartsOfMonth,
-  queryYear,
+} from '../../api/checkingHistoryApi'
+import {
   getCenternameList,
   getAbnormaDataObj,
-  getAbsentList1,getAbsentList0417,
-  getLateList,getLateList0417,
-  getChangeWorkList,getChangeWorkList0417,
-  getOutList
-} from '../../api/baobiao/checkingApi'
-import {getCookieInfo} from '../../api/getCookie'
+  getAbsentList1,
+  getLateList,
+  getChangeWorkList,
+  getOutList,
+  getLateEchartsOfYear, // 左侧异常年
+  queryYear, // 右侧年
+} from '../../api/checkingApi'
 export default {
-  name: 'Checking-v20190221',
+  name: 'CheckingHistory-v20190221',
   components: {
     AbnormalStatistics,
     Attendance,
-    EnergyStatistics,
+    // EnergyStatistics,
     Checking,
     MachingCenter
   },
   data () {
     return {
-      timerId: '', // 系统时间定时器
-      refreshDataId: '', // 页面数据10秒定时器
+      // timerId: '', // 系统时间定时器
       currentTime: '', // 系统当前时间
       allCenterList: [], // 所有加工中心列表
       dayOrNightStatus: '', // 白班或夜班
@@ -155,7 +170,7 @@ export default {
       careerValue: '', // 点击标题下拉事业部选中值
       careerOptions: [ // 事业部下拉option
         {label:'三一重机事业部',value:'zhongji'},
-        {label:'泵送事业部',value:'bengsong'}
+        {label:'泵送事业部',value:'bengsong'}   
       ],
       companyValue: '', // 子公司选中值
       companyOptions: [], // 子公司option
@@ -182,16 +197,16 @@ export default {
         abnormalData: { // 未派工
           abnormalList: [],
           pagination: {}
-        }
+        }      
       },
-			checkRadarList:[], // 考勤雷达图数据
+      checkRadarList:[], // 考勤雷达图数据
+      historyDateValue: '', // 历史时间顶部
+      selectedDayOrNight: 'DAY' // 默认选中白天
     }
   },
+  created () {
+  },
   mounted () {
-
-// debugger;
-    const baseUrlFromCookie = getCookieInfo().baseUrl
-    axios.defaults.baseURL = baseUrlFromCookie
     // 顶部日期时间
     this.currentTime = this.getCurrentDateTime() // 显示顶部时间
     this.getDayOrNightTextFun() // 显示顶部显示白夜班
@@ -200,9 +215,18 @@ export default {
       this.getDayOrNightTextFun() // 显示顶部显示白夜班
     }, 1000)
 
-    this.$store.commit('changeCenterNameMut','') // 加工中心为''
-    this.$store.commit('changeSubcompanyMut','全部')
-    this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
+    // 顶部设置默认日期为昨天
+    if (!this.historyDateValue) { // 日期为空取昨天
+      let val = moment(new Date()).format('YYYY-MM-DD')
+      let newDateA = new Date(val)
+      let DateNext1 = newDateA.setDate(newDateA.getDate()-1)
+      let DateObj = new Date(DateNext1)
+      this.historyDateValue = moment(DateObj).format('YYYY-MM-DD')
+    }
+
+    this.$store.commit('changeCenterNameMut','')
+    this.$store.commit('changeSubcompanyMut','北京桩机')
+
     // 基本信息顶部
     this.getBaseInfoData()
 
@@ -216,18 +240,6 @@ export default {
 
     // 获取所有加工中心数据
     this.getCenterNameData()
-
-    // 定时器刷新
-    this.refreshDataId = setInterval(() => {
-      this.getBaseInfoData()
-      this.getYearLeftData()
-      this.getDayRightData()
-      this.getMonthRightData()
-      this.getYearRightData()
-      this.$store.dispatch('getRadarChartsAction',{
-       end: this.$store.state.allCenterList.length
-      });
-    }, 10000)
   },
   methods: {
     // 点击标题回到首页
@@ -246,17 +258,35 @@ export default {
       var timeY = this.currentTime.substring(11, 13)
       if (timeY >= 8 && timeY < 20) {
         this.dayOrNightStatus = '白班'
-        this.workType = 1
       } else {
         this.dayOrNightStatus = '夜班'
-        this.workType = 2
+      }
+    },
+    getYMDHMS (val) {
+      if (!val) { // 日期为空取昨天
+        val = moment(new Date()).format('YYYY-MM-DD')
+        let newDateA = new Date(val)
+        let DateNext1 = newDateA.setDate(newDateA.getDate()-1)
+        let DateObj = new Date(DateNext1)
+        val = moment(DateObj).format('YYYY-MM-DD')
+      }
+      if (this.selectedDayOrNight === 'DAY') { // 白班
+        return val + ' 18:59:59'
+      } else if (this.selectedDayOrNight === 'NIGHT') { // 夜班
+        let newDateB = new Date(val)
+        let DateNext2 = newDateB.setDate(newDateB.getDate() + 1)
+        let DateObj2 = new Date(DateNext2)
+        val = moment(DateObj2).format('YYYY-MM-DD') + ' 07:59:59'
+        return val
       }
     },
     // 基本信息顶部
     async getBaseInfoData () {
-      const res = await getAttendanceData(this.$store.state.centername)
-      if (res.data && res.data.ret === '200' && res.data.titledata) {
-        this.baseInfo = res.data.titledata
+      // const res = await getAttendanceData(centername)
+      const ymdhms = this.getYMDHMS(this.historyDateValue)
+      const res = await getAttendanceData(this.$store.state.centername,ymdhms,this.selectedDayOrNight)
+      if (res.data && res.data.ret === '200' && res.data.data) {
+        this.baseInfo = res.data.data
       } else {
         this.baseInfo = {
           lateNum: 0, // 迟到
@@ -279,14 +309,15 @@ export default {
     },
     // 左侧==异常年
     async getYearLeftData () {
-      const res = await getLateEchartsOfYear(this.$store.state.centername)
+      const res = await getLateEchartsOfYear(this.$store.state.centername)     
       if (res.data && res.data.ret === '200') {
         this.yearDataLeft = res.data
       }
     },
     // 右侧==人员考勤日统计
     async getDayRightData () {
-      const res = await getWorkEchartsOfDay(this.$store.state.centername)
+      const res = await getWorkEchartsOfHistoryDay(this.$store.state.centername,this.historyDateValue,this.selectedDayOrNight)
+      // debugger;
       if (res && res.data && res.data.ret === '200') {
         this.dayEchartsDataRight = res.data
         if (this.baseInfo && this.baseInfo.totalNum) {
@@ -301,9 +332,10 @@ export default {
         this.dayEchartsDataRight.xAxis = [null,null,null,null,null,null,null,null,null,null,null,null]
       }
     },
-    // 右侧==人员考勤月统计 和 左侧人员考勤异常月统计
+    // 右侧==人员考勤月统计
     async getMonthRightData () {
-      const res = await getWorkEchartsOfMonth(this.$store.state.centername)
+      // const res = await getWorkEchartsOfMonth(centername)
+      const res = await getWorkEchartsOfMonth(this.$store.state.centername,this.historyDateValue)
       if (res.data && res.data.ret === '200') {
         this.monthEchartsDataRight = res.data
         if (this.baseInfo && this.baseInfo.totalNum) {
@@ -337,22 +369,25 @@ export default {
         if (this.$store.state.selectedTabCheckingBetween==='leida') {
           // this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin')
           // 雷达图
+          const ymdhms = this.getYMDHMS(this.$store.state.checkingHistoryQueryDate)
           this.$store.dispatch('getRadarChartsAction',{
             end: this.$store.state.allCenterList.length,
+            queryDay: ymdhms
           });
         }
       }
     },
     // 中间==人员考勤列表==加工中心为总桩机时显示各个加工中心的数据
     async getAbnormaData () {
-      const res = await getAbnormaDataObj(this.$store.state.allCenterList.length)
+      const ymdhms = this.getYMDHMS(this.$store.state.checkingHistoryQueryDate)
+      const res = await getAbnormaDataObj(this.$store.state.allCenterList.length, ymdhms)     
       // console.log('获取人员在岗列表：', res)
       if (res && res.data) {
         const {ret, data} = res.data
         if (res && ret === '200') {
           this.kaoqinList.lateList = data.lateList // 迟到
-          this.kaoqinList.leaveList = data.leaveList //早退
-          this.kaoqinList.absentList = data.absentList //旷工
+          this.kaoqinList.leaveList = data.leaveList //离岗
+          this.kaoqinList.absentList = data.absentList //未到
           this.kaoqinList.abnormalList = data.abnormalList //未派工
         }
       }
@@ -360,39 +395,52 @@ export default {
     // 中间==人员考勤列表==加工中心为子工作中心时（旷工、迟到、离岗、未派工）列表
     async getAbsentLateLeaveChangeworkList () {
       let centerNameFromCentername = this.$store.state.centername
-      let currentTimeDate = this.currentTime.substring(0,10)
+      // let currentTimeDate = this.currentTime.substring(0,10)
+      // let queryDay = this.$store.state.checkingHistoryQueryDate
+      let actualQueryDay = this.$store.state.checkingHistoryQueryDate
+      if (!actualQueryDay) { // 日期为空取昨天
+        actualQueryDay = moment(new Date()).format('YYYY-MM-DD')
+        let newDateA = new Date(actualQueryDay)
+        let DateNext1 = newDateA.setDate(newDateA.getDate()-1)
+        let DateObj = new Date(DateNext1)
+        actualQueryDay = moment(DateObj).format('YYYY-MM-DD')
+      }
+      let currentTimeDate = this.$store.state.checkingHistoryQueryDate?this.$store.state.checkingHistoryQueryDate:actualQueryDay
+      let ligangDate = this.getYMDHMS(this.$store.state.checkingHistoryQueryDate)
       // 获取旷工
-      // const resAbsentList = await getAbsentList1(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
-      const resAbsentList = await getAbsentList0417(this.workType,currentTimeDate,3,'','',centerNameFromCentername,1,1000)
+      const resAbsentList = await getAbsentList1(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
       if (resAbsentList && resAbsentList.data.ret === '200') {
         // console.log('获取的旷工数据:', res)
         this.kaoqinListSubCenter.absentData = {
-          absentList: resAbsentList.data.data.list,
+          absentList: resAbsentList.data.getAbsentList,
           pagination: {
-            total: resAbsentList.data.data.totalCount
+            total: resAbsentList.data.total
           }
         }
-      }
+      }    
 
       // 获取迟到
-      // const resLateList = await getLateList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
-      const resLateList = await getLateList0417(this.workType,currentTimeDate, 1, '','',centerNameFromCentername,1, 1000)
+      const resLateList = await getLateList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
       if (resLateList && resLateList.data.ret === '200') {
         // console.log('获取的迟到数据:', resLateList) // workno
         this.kaoqinListSubCenter.lateData = {
-          lateList: resLateList.data.data.list,
+          lateList: resLateList.data.lateList,
           pagination: {
-            total: resLateList.data.data.totalCount
+            total: resLateList.data.total
           }
         }
       }
-
+      
       // 获取离岗
-      const resOutList = await getOutList({
+      
+      const resOutList = await getOutList(
+        {
           centerName: centerNameFromCentername,
+          queryDay: ligangDate,
           page: 1,
           pagesize: 1000
-      })
+        }
+      )
       if (resOutList && resOutList.data.ret === '200') {
         // console.log('获取的离岗数据:', resOutList) // workno
         this.kaoqinListSubCenter.leaveData = {
@@ -404,14 +452,13 @@ export default {
       }
 
       // 获取未派工
-      // const resChangeWorkList = await getChangeWorkList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
-      const resChangeWorkList = await getChangeWorkList0417(this.workType,currentTimeDate, 2,'','',centerNameFromCentername, 1, 1000)
+      const resChangeWorkList = await getChangeWorkList(centerNameFromCentername,this.dayOrNightStatus, currentTimeDate, 1, 1000)
       if (resChangeWorkList && resChangeWorkList.data.ret === '200') {
         // console.log('获取的未派工即调班数据:', resChangeWorkList) // workno
         this.kaoqinListSubCenter.abnormalData = {
-          abnormalList: resChangeWorkList.data.data.list,
+          abnormalList: resChangeWorkList.data.changeWorkList,
           pagination: {
-            total: resChangeWorkList.data.data.totalCount
+            total: resChangeWorkList.data.total
           }
         }
       }
@@ -426,11 +473,6 @@ export default {
       this.getMonthRightData()
       this.getYearRightData()
 
-      // 切换雷达图的数据
-      if (this.$store.state.selectedTabCheckingBetween=='leida' && this.$store.state.centername!==''){
-        this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
-      }
-
       // 切换人员考勤列表
       if (this.$store.state.selectedTabCheckingBetween=='kaoqin' && this.$store.state.centername!=='') { // 子加工中心
         // 获取(旷工/迟到/离岗/未派工)数据
@@ -439,10 +481,13 @@ export default {
         this.getAbnormaData()
       }
 
-
+      // 切换雷达图的数据
+      if (this.$store.state.selectedTabCheckingBetween=='leida' && this.$store.state.centername!==''){
+        this.$store.commit('changeSelectTabCheckingBetweenMut','kaoqin') // 中间选中的tab设置为考勤列表
+      }
 
       // 切换能源指标的数据
-      if (this.$store.state.selectedTabCheckingBetween=='energy') {
+      if (this.$store.state.selectedTabCheckingBetween=='energy') {  
         // 请求能源指标列表数据
         if (this.$store.state.centername === '') { // 如果是全部
           this.$store.dispatch('getEnergyListDataAction',{
@@ -473,7 +518,7 @@ export default {
     },
     // 顶部选择事业部弹窗显示
     showSelectDialog () {
-      // this.selectDialogShow = true
+      this.selectDialogShow = true
     },
     careerChange (val) {
       // console.log(`选择的事业部是：${val}`)
@@ -505,11 +550,11 @@ export default {
         });
         return;
       }
-
+      
       if (this.companyValue === '长沙泵送'){
         axios.defaults.baseURL = 'http://10.0.91.50:8083'
       } else if (this.companyValue === '邵阳湖汽'){
-        axios.defaults.baseURL = 'http://10.13.136.22:8083'
+        axios.defaults.baseURL = 'http://10.13.136.22:8083'    
       } else if (this.companyValue === '北京桩机') {
         axios.defaults.baseURL = 'http://10.19.7.69:8083'
       }
@@ -533,64 +578,137 @@ export default {
     handleCancel () {
       this.selectDialogShow = false
     },
-    // 回到历史页面
-    enterCheckHistory () {
-      this.$router.push('/CheckingHistoryV6')
+    // 回到实时页面
+    enterChecking () {
+      this.$router.push('/CheckingV6')
+    },
+    handleHistoryTimeFun (val) {
+      // console.log('hhhhhhhh:', val)
+      this.$store.commit('changeCheckingHistoryQueryDateMut', val)
+      
+      // 左侧异常年
+      this.getYearLeftData()
+
+      // 右侧日/月/年统计/左侧异常月(数据在右侧月统计里面)
+      this.getDayRightData()
+      this.getMonthRightData()
+      this.getYearRightData()
+
+      // 基本信息
+      this.getBaseInfoData()
+      if (this.$store.state.centername==='') { // 总加工中心
+        // 雷达图
+        const ymdhms = this.getYMDHMS(this.$store.state.checkingHistoryQueryDate)
+        this.$store.dispatch('getRadarChartsAction',{
+          end: this.$store.state.allCenterList.length,
+          queryDay: ymdhms
+        });
+        // 人员考勤列表
+        this.getAbnormaData()
+      } else {  // 子加工中心
+        this.getAbsentLateLeaveChangeworkList()
+      }
+    },
+    handleSelectedDayOrNight (val) {
+      if (val === 'DAY') { // 白班
+        this.selectedDayOrNight = 'DAY'
+      } else if (val === 'NIGHT') { // 夜班
+        this.selectedDayOrNight = 'NIGHT'
+      }
+      this.$store.commit('changeCheckingHistoryQueryFlagMut', this.selectedDayOrNight)
+
+      // 右侧日统计(右侧月统计和年统计、左侧月统计和年统计不变)
+      this.getDayRightData()
+      // 基本信息
+      this.getBaseInfoData()
+
+      if (this.$store.state.centername==='') { // 总加工中心
+        // 雷达图
+        const ymdhms = this.getYMDHMS(this.$store.state.checkingHistoryQueryDate)
+        this.$store.dispatch('getRadarChartsAction',{
+          end: this.$store.state.allCenterList.length,
+          queryDay: ymdhms
+        });
+        // 人员考勤列表
+        this.getAbnormaData()
+      } else { // 子加工中心
+        this.getAbsentLateLeaveChangeworkList()
+      }
     }
   },
   destroyed () {
-    clearInterval(this.timerId)
-    clearInterval(this.refreshDataId)
+    // clearInterval(this.timerId)
   }
 }
 </script>
 <style lang="scss" scoped>
 .index{
   height:100%;
-  background-image: url(../../assets/images/index_bg0522.png);
+  background-image: url(../../assets/images/index_bg.png);
   background-size: 100% 100%;
   color: rgb(255, 255, 255);
   background-repeat: no-repeat;overflow: hidden;
   &_top{
-    position: fixed;top:2px;left:15px;right:15px;box-sizing: border-box;
-    height: 106px;line-height:50px;text-align: center;
-    .title {
-      font-size: 0.32rem;
+    position: fixed;top:0;left:15px;right:15px;box-sizing: border-box;
+    height: 106px;line-height:106px;text-align: center;
+    .title{
+      font-size: 0.44rem;
       color:#fff;font-weight:bold;
-      // span{cursor: pointer;}
+      span{cursor: pointer;}
     }
     .time{
       width:250px;
       font-size: 0.32rem;right:2.2rem;
-      color:#ababab;position: fixed;top:20px;z-index: 10;text-align: left;
+      color:#ababab;position: fixed;top:28px;z-index: 10;text-align: left;
       font-family: fontnameUnidreamLED !important;
     }
-    .back{
-      // position: absolute;top:15px;left:0;
-      cursor: pointer;float: left;display: inline-block;vertical-align: middle;
-      img{vertical-align: middle;}
-    }
-    .isClicked{opacity: .2;border:2px solid red;}
-    .dayOrnight{
-      // position: absolute;top:15px;left:80px;
-      float: left;display: inline-block;vertical-align: middle;margin-left: 10px;
-      img{vertical-align: middle;width: 55px;}
+    /* .dayOrnight{
+      float: left;display: inline-block;vertical-align: middle;
+      img{vertical-align: middle;width: 86px;}
       span{
-        font-size:24px;color:#ababab;
+        font-size:34px;color:#ababab;
         vertical-align: middle;margin-left:-10px;
       }
-    }
-    .historyBtn{
-      float: left;font-size:16px;width:100px;height:36px;line-height: 36px;
-      margin-top: 50px;margin-left:10px;cursor: pointer;
-      background:linear-gradient(#176275,#06437d);border-radius: 3px;
-    }
+    } */
     .leftInfo{
-      position: absolute;top:15px;left:0;overflow: hidden;
+      position: absolute;top:20px;left:0;font-size:0;
+      .back {
+        cursor: pointer;display: inline-block;vertical-align: middle;
+        img{vertical-align: middle;}
+      }
+      .historyTime {
+        display: inline-block;vertical-align: middle;margin-left:10px;height:38px;line-height: 38px;
+        /deep/ .el-date-editor.el-input{
+          width:150px;
+        }
+        /deep/ .el-input__inner{
+          background-color: rgba(44, 149, 240, 0.1);
+          border: 1px solid #285e8c;
+          height: 38px !important;
+          line-height: 38px !important;
+        }
+      }
+      .dayNightBox {
+        display: inline-block;vertical-align: middle;box-sizing: border-box;margin-left:10px;
+        font-size: 14px;overflow: hidden;height:40px;line-height: 38px;border: 1px solid #285e8c;border-radius: 3px;
+        li{
+          float: left;padding:0 10px;cursor: pointer;
+          img{vertical-align: middle;margin-right:5px;}
+          &.selected{
+            background:linear-gradient(#176275,#06437d);
+          }
+        }
+      }
+      .historyBtn{
+        display: inline-block;vertical-align: middle;margin-left:10px;
+        font-size:16px;width:110px;height:38px;line-height: 38px;
+        margin-left:10px;cursor: pointer;
+        background:linear-gradient(#176275,#06437d);border-radius: 3px;
+      }
     }
   }
   &_main{
-    position: fixed;top:70px;left:15px;right:15px;bottom:15px;
+    position: fixed;top:120px;left:15px;right:15px;bottom:15px;
     // border-top:1px solid red;
   }
   &_left{

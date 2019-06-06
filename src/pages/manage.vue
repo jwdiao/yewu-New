@@ -26,7 +26,7 @@
           <i class="el-icon-menu" style="margin-right: -4px; text-align: left; vertical-align: sub;"></i>
           <span slot="title">三现管理后台</span>
         </el-menu-item>
-        <el-submenu index="2">
+        <el-submenu index="2" v-show="remark!=='3' && remark!=='0'">
           <template slot="title"><i class="el-icon-document"></i>基础信息</template>
           <el-menu-item index="pieceinformation">计件人员信息</el-menu-item>
 					<el-menu-item index="personEquipment">人员设备关联</el-menu-item>
@@ -34,13 +34,13 @@
 				  <el-menu-item index="pieceWorker">计件人员信息修改</el-menu-item>
 					<!-- <el-menu-item index="managePerson">管理人员</el-menu-item> -->
         </el-submenu>
-        <el-submenu index="3">
+        <el-submenu index="3" v-show="remark!=='0'" >
           <template slot="title"><i class="el-icon-message"></i>派工信息</template>
           <el-menu-item index="paigong">派工信息导入</el-menu-item>
           <el-menu-item index="deletepaigong">派工信息删除</el-menu-item>
 					<el-menu-item index="equipmentMessage">设备派工信息</el-menu-item>
         </el-submenu>
-        <el-submenu index="4">
+        <el-submenu index="4" v-show="remark!=='3' && remark!=='0'">
           <template slot="title"><i class="el-icon-news"></i>业务信息</template>
           <el-menu-item index="clocklist">人脸打卡记录</el-menu-item>
           <!--<el-menu-item index="dispatchList">迟到统计</el-menu-item>-->
@@ -49,7 +49,13 @@
           <el-menu-item index="dispatchListNEW">迟到统计</el-menu-item>
           <el-menu-item index="absentNEW">旷工统计</el-menu-item>
           <el-menu-item index="shiftListNEW">调班统计</el-menu-item>
-          <!--<el-menu-item index="clocklistsync">人脸打卡记录同步</el-menu-item>  &lt;!&ndash;0416新增加&ndash;&gt;-->
+          <el-menu-item index="clocklistsync">人脸打卡记录同步</el-menu-item>
+		      <el-menu-item index="ChechStatistical">考勤统计</el-menu-item>
+        </el-submenu>
+        <!--20190524加报表导出-->
+        <el-submenu index="5" v-show="remark==='0'">
+          <template slot="title"><i class="el-icon-news"></i>报表导出</template>
+		      <el-menu-item index="PPTOnload">报表导出</el-menu-item>
         </el-submenu>
       </el-menu>
     </el-aside>
@@ -73,7 +79,8 @@
 		},
     data () {
       return {
-        username: this.$store.state.adminObj.username
+        username: this.$store.state.adminObj.username,
+        remark:'',
       }
     },
     computed: {
@@ -86,6 +93,8 @@
     },
     mounted () {
       this.username = getCookieInfo().username
+      this.remark = localStorage.getItem('remark')
+      console.log('this.remark:',this.remark)
     },
     methods: {
       ...mapMutations([
@@ -149,14 +158,14 @@
       border:0;font-size:14px;border-left:3px solid transparent;
       padding-left: 45px !important;background-color:#192433 !important
     }
-    /deep/ li>.el-menu li:hover{background-color:#4473b8 !important}
-    /deep/ .el-menu-item{border-left:3px solid transparent;}
+    /*/deep/ li>.el-menu li:hover{background-color:rgba(50,50,50,0.5) !important}*/
     /deep/ .el-submenu [class^=el-icon-] {
       vertical-align: -1px;
     }
     .manage-menu_icon{width:16px;}
     /deep/ .el-menu-item i{color:#fff;}
-    /deep/ .el-menu-item.is-active{border-left:3px solid #409EFF;background-color: #4473b8!important;color:#fff!important;}
+    .el-menu /deep/ .el-menu-item.is-active{background: #5a8cff !important;color:rgba(255,255,255,1) !important;}   /*border-left:3px solid #409EFF;*/
+    /deep/ .el-menu-item:hover{background:rgba(000,32,64,0.3)!important}   /*border-left:3px solid #409EFF;*/
     /deep/ .el-menu-item.is-active i{color:#fff!important;}
     /deep/ .el-submenu__title i{color:#fff;}
   }

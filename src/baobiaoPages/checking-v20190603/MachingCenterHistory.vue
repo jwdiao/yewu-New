@@ -44,7 +44,7 @@ export default {
     getCenterInfo (item) {
       // 调用发请求
       this.flag = true
-
+      
       if (item.length > 6) {
         this.currentCenterName = item.substring(0, 6)
       } else {
@@ -52,7 +52,7 @@ export default {
       }
       if (item === '') {
         this.currentCenterName = this.$store.state.selectedSubcompany
-      }
+      }    
       this.$emit('selectName', item)
     }
   }
@@ -60,15 +60,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  html{
-    overflow: hidden;
-  }
 .maching-center{
-  width:470px;
+  width:25%;
   .home_head-btn{
     // width:1.4rem;
     width:190px;
-    position: fixed;right:24px;top:23px;height:40px;text-align: center;line-height: 40px;
+    position: fixed;right:24px;top:60px;height:40px;text-align: center;line-height: 40px;
     background: gradient(linear, left top, left bottom, from(#4CDDED), to(#0088FE));
     background: linear-gradient(to top,  #4CDDED,  #0088FE);
     background: -ms-linear-gradient(to top,  #4CDDED,  #0088FE);
@@ -83,7 +80,6 @@ export default {
       position:absolute;
       top:16px;
       right:7px;
-      transition: 1s;
     }
     /*点击后向上收起*/
     .triangle_bottom {
@@ -94,7 +90,6 @@ export default {
       position:absolute;
       top:8px;
       right:7px;
-      transition: 1s;
     }
   }
   .home_container{
@@ -102,13 +97,13 @@ export default {
     background-color: #0e2154;
     opacity: 0.9;
     position: absolute;
-    top:70px;bottom:30px;
+    top:120px;bottom:30px;
     right: 15px;
     z-index:100;
     text-align: center;
     &.off{
       display: none;
-      transition: 2s;
+      transition: 1s;
     }
     &_title{
       color: yellow;
@@ -147,7 +142,7 @@ export default {
     position: fixed;right:24px;top:10px;color:#ababab;font-size:32px;
   }
   .centerNameScroll{
-    width: 495px;height: 745px; overflow: auto;
+    height: 700px; overflow: scroll;
   }
 }
 </style>

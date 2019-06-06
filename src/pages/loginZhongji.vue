@@ -9,7 +9,7 @@
 				<el-form ref="loginForm" :model="loginData" :rules="rules" style="margin-top: 20px;">
 					<el-form-item prop="username">
             <i></i>
-						<el-input placeholder="请输入登录账号" v-model="loginData.username"><span></span></el-input>
+						<el-input placeholder="请输入登录账号" v-model="loginData.username" @change="changeAccountFun"><span></span></el-input>
 					</el-form-item>
 					<el-form-item prop="password">
             <i></i>
@@ -50,6 +50,13 @@ export default {
     }
   },
   mounted(){
+    // axios.get(`http://localhost:8082/static/loginData.txt`).then(res=>{                                   //本地调试
+    // axios.get(`http://10.19.8.22:8080/${window.location.href.substring(23,window.location.href.length-8)}/static/loginData.txt`).then(res=>{   //线上
+    axios.get(`${window.location.href.substring(0,window.location.href.length-8)}/static/loginData.txt`).then(res=>{   //线上
+      this.resLoginData = JSON.parse(JSON.stringify(res.data))
+      console.log('resLoginData类型:',typeof this.resLoginData)
+      console.log('this.resLoginData:',this.resLoginData)
+    })
   },
   methods:{
 		...mapActions([
@@ -103,30 +110,136 @@ export default {
 			});
 		},
 		async loginMethods (formData) {
-			 //const res = await $http.post('http://10.88.195.89:9084/SanyBasicUser/login', formData);
-			 const res = await $http.post('http://10.19.8.22:9085/SanyBasicUser/login', formData);
-
+			/* const res = await $http.post('http://10.19.8.22:9085/SanyBasicUser/login', formData);
 				const dataInfo = res.data;
 				const userInfo = dataInfo.data
 				if (dataInfo.msg === 'ok') {
-					this.$message({
-						type: 'success',
-						message: '登陆成功!'
-					});
-					let user = {
+          this.$message({
+            type: 'success',
+            message: '登陆成功!'
+          });
+          let user = {
 						username: userInfo.loginAccount,
 						// password: userInfo.loginPwd,
 						ipAddress: userInfo.ipAddress,
 						port: userInfo.port,
-            remark:userInfo.remark,
 						token: '789789'
 					}
-					localStorage.setItem('remark',userInfo.remark)
 					// 登陆成功，把信息记录到cookie存储中
 					this.loginAction(user)
-					if (userInfo.remark === '1' || userInfo.remark === '0' || userInfo.remark === '3') {     //1：正常后台考勤系统，0：董办下载推送报表ppt， 3：沈阳重装
+					if (userInfo.remark === '1') {
 						this.$router.push('/manage')
-					} else if (userInfo.remark === '2') {   // 人脸考勤系统
+					} else if (userInfo.remark === '2') {
+						this.$router.push('/faceAndAttendance')
+					}
+				} else {
+					this.$message({
+						type: 'error',
+						message: dataInfo.msg
+					})
+				}*/
+			const {resLoginData} = this
+      if(resLoginData[0].account === formData.loginAccount){
+        //发请求向后台，请求remark
+        const result = await $http.post(`http://${resLoginData[0].ipAddress}:${resLoginData[0].port}/userLogin/valiUser`,{username:formData.loginAccount,password:formData.loginPwd})
+        console.log('result:',result)
+        if(!result&&!result.data){
+          return
+        }else if(result.data.ret === '200'){
+          console.log('result:',result.data)
+          var ipAddress = resLoginData[0].ipAddress
+          var port = resLoginData[0].port
+          var remark = result.data.data.remark
+          var account = resLoginData[0].account
+          let user = {
+            username: account,
+            ipAddress: ipAddress,
+            port: port,
+            remark:remark
+          }
+          // 登陆成功，把信息记录到cookie存储中
+          this.loginAction(user)
+          if (remark === '1') {
+            this.$router.push('/manage')
+          } else if (remark === '2') {
+            this.$router.push('/faceAndAttendance')
+          }
+          this.$message({
+            type: 'success',
+            message: '登陆成功!'
+          });
+        }else if(result.data.ret !== '200'){
+          this.$message({
+            type: 'error',
+            message: '输入的用户名或密码不正确'
+          });
+        }
+
+      }else if(resLoginData[1].account === formData.loginAccount){
+        //发请求向后台，请求remark
+        const result = await $http.post(`http://${resLoginData[1].ipAddress}:${resLoginData[1].port}/userLogin/valiUser`,{username:formData.loginAccount,password:formData.loginPwd})
+        if(!result&&!result.data){
+          return
+        }else if(result.data.ret === '200'){
+          var ipAddress = resLoginData[1].ipAddress
+          var port = resLoginData[1].port
+          var remark = result.data.data.remark
+          var account = resLoginData[1].account
+          let user = {
+            username: account,
+            ipAddress: ipAddress,
+            port: port,
+            remark:remark
+          }
+          // 登陆成功，把信息记录到cookie存储中
+          this.loginAction(user)
+          if (remark === '1') {
+            this.$router.push('/manage')
+          } else if (remark === '2') {
+            this.$router.push('/faceAndAttendance')
+          }
+          this.$message({
+            type: 'success',
+            message: '登陆成功!'
+          });
+        }else if(result.data.ret !== '200'){
+          this.$message({
+            type: 'error',
+            message: '输入的用户名或密码不正确'
+          });
+        }
+
+      }else{
+        this.$message({
+          type: 'error',
+          message: '输入的用户名或密码不正确'
+        });
+        return
+      }
+      /*20190527   22服务器*/
+      /*else{
+			  //除了重机以外的其他事业部请求
+        console.log('这是除了重机以外的其他事业部请求~~~~~')
+         const res = await $http.post('http://10.19.8.22:9085/SanyBasicUser/login', formData);
+				const dataInfo = res.data;
+				const userInfo = dataInfo.data
+				if (dataInfo.msg === 'ok') {
+          this.$message({
+            type: 'success',
+            message: '登陆成功!'
+          });
+          let user = {
+						username: userInfo.loginAccount,
+						// password: userInfo.loginPwd,
+						ipAddress: userInfo.ipAddress,
+						port: userInfo.port,
+						token: '789789'
+					}
+					// 登陆成功，把信息记录到cookie存储中
+					this.loginAction(user)
+					if (userInfo.remark === '1') {
+						this.$router.push('/manage')
+					} else if (userInfo.remark === '2') {
 						this.$router.push('/faceAndAttendance')
 					}
 				} else {
@@ -135,9 +248,12 @@ export default {
 						message: dataInfo.msg
 					})
 				}
-		},
+      }*/
+    },
 
-  }
+    //20190521当输入账号时，根据文本找到对应的ip
+    changeAccountFun(value){},
+  },
 }
 </script>
 <style scoped>

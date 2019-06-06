@@ -156,8 +156,10 @@
                             <el-table-column label="操作" width="100">
                               <template slot-scope="scope">
                                 <el-button
+																  disabled
+																	type="danger"
                                   @click.native.prevent="deletepieceinformation(scope.$index, scope.row)"
-                                  style="background: #ff404a;color: #fff;" size="small">删除</el-button>
+                                  style="color: #fff;" size="small" >删除</el-button>
                               </template>
                             </el-table-column>
                           </el-table>

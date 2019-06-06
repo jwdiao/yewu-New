@@ -87,11 +87,11 @@
 <script>
 import moment from 'moment'
 import axios from 'axios'
-import AbnormalStatistics from '@/baobiaoPages/checking-v20190419/AbnormalStatistics'
-import Attendance from '@/baobiaoPages/checking-v20190419/Attendance'
-import EnergyStatistics from '@/baobiaoPages/checking-v20190419/EnergyStatistics'
-import Checking from '@/baobiaoPages/checking-v20190419/Checking'
-import MachingCenter from '@/baobiaoPages/checking-v20190419/MachingCenter'
+import AbnormalStatistics from '@/baobiaoPages/checking-v20190603/AbnormalStatistics'
+import Attendance from '@/baobiaoPages/checking-v20190603/Attendance'
+import EnergyStatistics from '@/baobiaoPages/checking-v20190603/EnergyStatistics'
+import Checking from '@/baobiaoPages/checking-v20190603/Checking'
+import MachingCenter from '@/baobiaoPages/checking-v20190603/MachingCenter'
 
 import {
   getAttendanceData,

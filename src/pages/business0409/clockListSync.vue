@@ -10,14 +10,26 @@
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">开始时间：</span>
-                  <el-date-picker v-model="startTime" type="datetime" :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                  <el-date-picker v-model="startTime" 
+				  type="datetime" 
+				  :picker-options="pickerOptionsStart" 
+				  value-format="yyyy-MM-dd HH:mm:ss" 
+				  placeholder="选择日期时间"
+				  @change="handleStartTime"
+				  @focus="startTimeFocus">
                   </el-date-picker>
                 </div>
                 </template>
                 <template>
                 <div class="block moudle">
                   <span class="demonstration">结束时间：</span>
-                  <el-date-picker  v-model="endTime"  type="datetime" :picker-options="pickerOptionsEnd" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                  <el-date-picker  v-model="endTime"  
+				  type="datetime" 
+				  :picker-options="pickerOptionsEnd" 
+				  value-format="yyyy-MM-dd HH:mm:ss" 
+				  placeholder="选择日期时间"
+				  @change="handleEndTime"
+				  @focus="endTimeFocus">
                   </el-date-picker>
                 </div>
                 </template>
@@ -74,23 +86,26 @@ export default {
   data() {
     return {
       loadingsync:false,//同步加载中
-      pickerOptions0: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
+      pickerOptionsStart: {
+        disabledDate:(time) => {
+          return time.getTime() > this.startNowTime || time.getTime() < new Date(this.endTime).getTime()
         }
       },
       pickerOptionsEnd:{
         disabledDate:(time) =>{
-          return time.getTime() < new Date(this.startDate).getTime() || time.getTime() > Date.now();
+         /* return time.getTime() < new Date(this.startTime).getTime() || time.getTime() > Date.now(); */
+		    return time.getTime() > new Date(this.startTime).getTime() || time.getTime()<new Date(this.startTime).getTime()-8*60*60*1000 ||time.getTime() > this.endNowTime
         }
       },
       startTime: '',  //开始时间
       endTime: '',  //结束时间
+	  startNowTime:Date.now(),
+	  endNowTime:Date.now(),
       eventsnapimg:'', //图像
       historyData:[],  //页面显示列表数组
-			asycnlist:[],//同步功能所要传的接口
-			asyncFlag:true,//同步按钮是否禁用
-		  tableHeight:'',//
+	  asycnlist:[],//同步功能所要传的接口
+	  asyncFlag:true,//同步按钮是否禁用
+	  tableHeight:'',//
       workno:'', // 工号
       workname:'', // 姓名
       // 分页
@@ -117,24 +132,46 @@ export default {
     handleResize(){
 			var height = document.documentElement.clientHeight
 			this.tableHeight = height - 355			
-			//console.log(333)
-			/* console.log(height) 386*/
-      /*var screenHeight = $(window).width()
-      console.log(screenHeight)
-      if(screenHeight>1000){
-        $('.title_message').css('height','38px')
-        $('.title_message>span').css('height','38px')
-      }else{
-        $('.title_message').css('height','32px')
-        $('.title_message>span').css('height','32px')
-      }*/
     },
+	/*开始时间获取焦点事件,如果结束时间的值为空则开始时间只大于当前时间即可*/
+	startTimeFocus(){
+		    if(this.endTime==null){
+				this.startNowTime = Date.now();
+			}
+		    
+	},
+	/*开始时间获取焦点事件,如果开始时间值未null则结束时间大于当前时间即可,否则才做限制*/
+	endTimeFocus(){
+			 if(this.startTime!=null){
+				this.endNowTime = Date.now();
+				this.pickerOptionsEnd.disabledDate=(time) => {
+					 return time.getTime() > new Date(this.startTime).getTime() || time.getTime()<new Date(this.startTime).getTime()-8*60*60*1000 ||time.getTime() > this.endNowTime
+				} 
+			 }else{
+				 this.pickerOptionsEnd.disabledDate=(time) => {
+				 	return time.getTime() > this.endNowTime
+				 } 
+				
+			 }    
+	},
+	/*开始时间改变事件*/
+	handleStartTime(){
+		
+	},
+	/*结束时间改变事件*/
+	handleEndTime(){
+		if(this.endTime!=null){
+			this.startNowTime = new Date(this.endTime).getTime();
+		}
+		return;	
+	},
     /*函数名：getEventInfoList
       参数： startTime：开始时间, endTime：结束时间
       描述：异步ajax请求与后台通信
     * */
     async getEventInfoList() {
-			const res = await http.post('http://10.88.190.36:8083/userPushRecord/getPush',{
+		    let url = getCookieInfo().baseUrl + '/userPushRecord/getPush'
+			const res = await http.post(url,{
 				startTime:this.startTime,
 				endTime:this.endTime,
 				page:this.pagination.page,
@@ -176,7 +213,8 @@ export default {
 		  描述：异步ajax请求与后台通信
 		* */
 		async insertPerson(){
-			const res = await http.post('http://10.88.190.36:8083/userPushRecord/insertPerson',{
+			let url = getCookieInfo().baseUrl + '/userPushRecord/insertPerson'
+			const res = await http.post(url,{
 				list:this.asycnlist
 			})
 			if(res){
@@ -206,19 +244,28 @@ export default {
      描述：点击按钮检索信息
    * */
     searchProInfo(){
-      if(this.startTime && this.endTime){	 
-		console.log(this.asycnlist)
-        this. getEventInfoList()
-        if(this.historyData.length>0){
-          this.downShow = true;
-        }else{
-          this.downShow = false;
-        }
+      if(this.startTime && this.endTime){
+		if(new Date(this.endTime) - new Date(this.startTime)>8*60*60*1000){
+			this.$message({
+			  type:'error',
+			  message:'查询八小时以内'
+			});
+			return false;
+		}else{
+			this. getEventInfoList()
+			if(this.historyData.length>0){
+			  this.downShow = true;
+			}else{
+			  this.downShow = false;
+			}
+		}
+        
       }else{
         this.$message({
           type:'error',
           message:'必须填写开始时间和结束时间'
-        })
+        });
+		return false;
       }
     },
 

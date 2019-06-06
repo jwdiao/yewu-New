@@ -48,7 +48,8 @@ const DispatchListNEW = r => require.ensure([], () => r(require('@/pages/busines
 const ShiftListNEW = r => require.ensure([], () => r(require('@/pages/business0409/shiftListNEW20190410')), 'shiftListNEW20190410')
 // 旷工信息
 const AbsentListNEW = r => require.ensure([], () => r(require('@/pages/business0409/absentListNEW20190410')), 'absentListNEW20190410')
-
+//考勤统计
+const ChechStatistical = r => require.ensure([], () => r(require('@/pages/business0409/checkStatistical')), 'HomeCheckingV4')
 
 //===============================报表页面===============================================
 // 首页
@@ -58,9 +59,14 @@ const HomeCheckingV1 = r => require.ensure([], () => r(require('@/baobiaoPages/c
 const HomeCheckingV2 = r => require.ensure([], () => r(require('@/baobiaoPages/checking20190218/index.vue')), 'HomeCheckingV2')
 const HomeCheckingV3 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190221/Checking-v20190221.vue')), 'HomeCheckingV3')
 const HomeCheckingV4 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190419/Checking-v20190419.vue')), 'HomeCheckingV4')
+const HomeCheckingV5 = r => require.ensure([], () => r(require('@/baobiaoPages/checking-v20190603/Checking-v20190603.vue')), 'HomeCheckingV5')//20190603
+
 // 打卡
 const Vision = r => require.ensure([], () => r(require('@/baobiaoPages/vision.vue')), 'Vision')
 
+
+//ppt导出20190524
+const PPTOnload = r => require.ensure([], () => r(require('@/pages/pptOnload/pptOnload.vue')), 'pptOnload')
 
 
 Vue.use(Router)
@@ -102,10 +108,15 @@ const router = new Router({
       name: 'HomeCheckingV3',
       component: HomeCheckingV3
     }, */
-    {
-      path: '/homechecking',
+    /*{
+      path: '/homecheckingV4',
       name: 'HomeCheckingV4',
       component: HomeCheckingV4
+    },*/
+    {
+      path: '/homechecking',
+      name: 'HomeCheckingV5',
+      component: HomeCheckingV5
     },
     {
       path: '/vision',
@@ -193,10 +204,20 @@ const router = new Router({
           path: '/absentNEW',
           component: AbsentListNEW,
           meta: ['业务信息', '旷工统计'],
-        }, {
+        },
+				 {
+				  path: '/ChechStatistical',
+				  component: ChechStatistical,
+				  meta: ['业务信息', '考勤统计'],
+				},
+				{
           path: '/dispatchListNEW',
           component: DispatchListNEW,
           meta: ['业务信息', '迟到统计'],
+        },{
+          path: '/PPTOnload',
+          component: PPTOnload,
+          meta: ['报表导出', '报表导出'],
         }]
     }
   ]

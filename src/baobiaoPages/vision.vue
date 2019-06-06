@@ -4,13 +4,13 @@
 			<!--标头-->
 			<div class="vision_title">
 				<img src="../assets/images/logo.png" alt="">
-				<span @click="enterIndexPage('/faceAndAttendance')">三一视觉考勤</span>			
+				<span @click="enterIndexPage('/faceAndAttendance')">三一视觉考勤</span>
 			</div>
 			<!--右上角时间-->
 			<em class="time" v-text="currentTime"></em>
 			<div class="home_head-btn" @click="cameraNameChange">
 				{{currentCenterName}}
-				<!--默认向下展开三角-->   
+				<!--默认向下展开三角-->
 				<div class="triangle_top" v-show="flag"></div>
 				<!--点击后向上收起-->
 				<div class="triangle_bottom" v-show="!flag"></div>
@@ -93,8 +93,8 @@
 		<div class="home_container" :class="{off:flag}">
 			<img class="close" src="../assets/images/close.png" @click="close" />
 			<ul class="home_container_list">
-				<li v-for="(centerItem,index) in sanyAttendanceSiteList" 
-				:key="index" 
+				<li v-for="(centerItem,index) in sanyAttendanceSiteList"
+				:key="index"
 				:ref="centerItem.stateno"
 				@click="attendClick(centerItem)">{{centerItem.attendancesite}}</li>
 			</ul>
@@ -139,29 +139,29 @@
 			this.timer1 = setInterval(() => {
 				this.currentTime = this.getCurrentDateTime();
 			}, 1000);
-           
+
 			// 获取摄像头下拉列表
 			this.getCameraList();
 			// 获取出入口数据
-			
-			
-			
-			
+
+
+
+
 		    this.timer = setInterval(() => {
 				if(sessionStorage.stateno){
 				   this.getVisionList({stateno:sessionStorage.stateno});
 				}else{
 				   this.getVisionList({stateno:''});
 				}
-				
-			}, 500); 
+
+			}, 500);
 			this.timer2 = setInterval(() => {
 				window.location.reload();
-			},1000*3600)
+			},1000*36000)
 			/* this.$once('hook:beforeDestroy',() => {
 				clearInterval(timer)
 			}) */
-			 
+
 		},
 		methods: {
 			enterIndexPage(path) {
@@ -176,7 +176,7 @@
 				// clearInterval(this.timer)
 				this.flag = !this.flag;
 			},
-			attendClick(currentCamera){//摄像头下拉列表点击事件	
+			attendClick(currentCamera){//摄像头下拉列表点击事件
 				this.selectedCamera = currentCamera.attendancesite
 				sessionStorage.selectedCamera =  currentCamera.attendancesite
 				//this.stateno = currentCamera.stateno
@@ -188,24 +188,24 @@
 				this.flag = !this.flag
 			},
 			async getCameraList(){//摄像头下拉List
-				
+
 				let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/useRattendanceHisSelect';
 				const res = await $http.post(axiosUrl)
 				// const res = await $http.post("/sanyUserPushRecord/useRattendanceHisSelect")
-				if (res && res.data.ret=== "200"){					
+				if (res && res.data.ret=== "200"){
 					this.sanyAttendanceSiteList =  res.data.sanyAttendanceSiteList
-					
+
 				}
 			},
 			async getVisionList(data) {//获取人脸信息
-				let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/useRattendanceHisInOut';  
+				let axiosUrl = getCookieInfo().baseUrl + '/sanyUserPushRecord/useRattendanceHisInOut';
 				const res = await $http.post(axiosUrl, data)
 				if (res && res.data.ret=== "200"){
 					this.userInList = res.data.userInList? res.data.userInList: [];
 					this.userOutList = res.data.userOutList? res.data.userOutList: [];
 					this.nowObject = res.data.nowObject? res.data.nowObject: {snappicurl:''};
-					
-				}				
+
+				}
 			}
 		},
 
@@ -327,9 +327,22 @@
 					color: #FFF;
 					font-weight: bold;
 					text-align: left;
-					background: url(../assets/images/index_titleIcon.png) no-repeat;
+					/*background: url(../assets/images/index_titleIcon.png) no-repeat;*/
 					background-size: 20px 100%;
+          position:relative;
 				}
+        .title:after{
+          display: block;
+          content: '';
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          border-radius: 12px;
+          background: #31E6FF;
+          left: 0px;
+          top: 42%;
+          margin-top: -5px;
+        }
 
 				.vision_check {
 					flex: 1;

@@ -113,8 +113,8 @@
 
                   <el-form-item class="submitBtn">
                     <el-button type="primary" @click="searchProInfo" style="width: 100px">查询</el-button>
+                    <el-button icon="el-icon-download" @click="exportPaiGongFile" style="width: 115px;background: rgba(0,200,0,0.8);color: #ffffff">导出文件</el-button>
                   </el-form-item>
-
                 </el-form>
               </el-row>
             </section>
@@ -352,7 +352,6 @@ export default {
 
       let axiosUrl = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/getListOfNewUpload';
       // let axiosUrl = 'http://10.88.195.89:8083/sanyWorkPlanExcel/getListOfNewUpload';
-      // console.log('派工信息导入：',axiosUrl)
       const res = await http.post(axiosUrl,{'centername':centername,'workusernum':workNumberName,'date':date,'page':page,'pagesize':pageSize})
       // const res = await http.post("/sanyWorkPlanExcel/getListOfNewUpload",{'centername':centername,'date':date,'page':page,'pagesize':pageSize})
       if (res.data.ret === "200") {
@@ -557,6 +556,21 @@ export default {
       page = '1'
       let {searchTime,machingCenterName,workNumberName} = this
       this.getWorkPlanInfoList(machingCenterName,workNumberName,searchTime,page,this.pagination.pageSize.toString())
+    },
+    //20190603派工数据导出按钮
+    exportPaiGongFile(){
+      const {value2,machingCenterName,workNumberName} = this
+      if(value2 === null){
+        this.$message({message:'请选择导出日期',type:'error'})
+        return
+      }
+      let url = getCookieInfo().baseUrl + '/sanyWorkPlanExcel/exportWorkplanList'
+      // let url = 'http://10.88.195.89:8083/sanyWorkPlanExcel/exportWorkplanList'  //高杰
+      url = `${url}?centername=${machingCenterName}&workusernum=${workNumberName}&date=${value2}`;
+      url = (encodeURI(url));
+      console.log('url:',url)
+      // window.open(url,'_blank');
+      window.location.href = url
     },
   }
 }

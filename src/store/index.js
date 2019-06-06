@@ -12,7 +12,7 @@ const store = new Vuex.Store({
       ipAddress: '', // ip
       port: '', // 端口号
       token: '', // token
-      remark: '' // 设置管理员标识
+      remark: '', // 设置管理员标识
     }, //管理页信息
      /**========================考勤页面checking start==========================**/
      centername: '', // 当前选中的加工中心
@@ -30,7 +30,7 @@ const store = new Vuex.Store({
        bootRate: [], // 开机率
        workRate: [], // 作业率
        totalConsumPower: [] // 能耗
- 
+
      }, // 能源本日数据
      energyMonthEchartsData: {
        xAxis: [], // x轴
@@ -94,7 +94,7 @@ const store = new Vuex.Store({
 			if (res && res.status === 200) {
 				if (res.data && res.data.ret === "200") {
 					   state.checkRadarList = res.data.data
-				} 
+				}
 			}
     },
     // 改变考勤历史页面查询日期
